@@ -78,26 +78,26 @@ local lib = {
     
         if ( AddCfgPart == "bool.switcher" ) then 
 
-           panel.boolswitch = vgui.Create( "HCLIB.Switch", panel );
+           panel.input = vgui.Create( "HCLIB.Switch", panel );
 
-           panel.boolswitch:Dock( RIGHT );
+           panel.input:Dock( RIGHT );
 
-           panel.boolswitch:DockMargin( 0, 30, 0, 10 );
-            
-           panel.boolswitch.OnChange = function() end;
+           panel.input:DockMargin( 0, 30, 0, 10 );
+           
+           panel.input.OnChange = function() end;
 
         end;
 
         if ( AddCfgPart == "string.entry" ) then 
 
 
-            panel.stringentry = vgui.Create( "HCLIB.TextEntry", panel )
+            panel.input = vgui.Create( "HCLIB.TextEntry", panel )
 
-            panel.stringentry:Dock( RIGHT );
+            panel.input:Dock( RIGHT );
 
-            panel.stringentry:DockMargin( 0, 10, 50, 10 );
+            panel.input:DockMargin( 0, 10, 50, 10 );
 
-            panel.stringentry:SetWide(  400 );
+            panel.input:SetWide(  400 );
 
         end;
 

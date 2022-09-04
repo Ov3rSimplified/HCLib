@@ -152,6 +152,8 @@ local LoadScripts = function()
 
             end;
 
+            HCLIB.Scripts[err.Scriptindex] = {};
+
             err.LoadFiles()
 
             if SERVER then 

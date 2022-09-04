@@ -79,8 +79,8 @@ function PANEL:Paint( w, h )
 
     if ( self.entry.Focused ) then 
 
-        draw.RoundedBox( 0, w / 2 - 180, 1, 100, 10, BlueSecond )
-
+       -- draw.RoundedBox( 0, w / 2 - 180, 1, 100, 10, BlueSecond )
+        
     else
 
 
