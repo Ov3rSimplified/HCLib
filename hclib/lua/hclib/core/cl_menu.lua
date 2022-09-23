@@ -28,20 +28,32 @@ THIS IS THE LIBRARY FOR ALL OF HEXAGON CRYPTICS SCRIPTS!!
 ]]--  
  
 concommand.Add("d", function()
-        if IsValid(LocalPlayer().HCLIBMinimized) then 
+        
+    if not HCLIB.Admin:HasPermission( LocalPlayer(), "main", "HCLIB.Access" ) then return end;
+    
+    if IsValid(LocalPlayer().HCLIBMinimized) then 
 
         LocalPlayer().HCLIBMinimized:SetVisible(true)
     
-    
-            else    
+    else    
 
         local v = vgui.Create("hclib_cfg_menu")
+
         v:SetSize(ScrW()*0.59,ScrH()*0.9)
+
         v:Center()
+
         v:MakePopup()
+
         function v:DefineMinimizeFunction()
+
             v:SetVisible(false)
+
             LocalPlayer().HCLIBMinimized = v;
-        end
+
+        end;
+
     end;
+
+
 end)

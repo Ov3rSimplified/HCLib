@@ -42,7 +42,15 @@ HCLIB.ScriptBridge = HCLIB.ScriptBridge or {}
 
 HCLIB.Config = HCLIB.Config or {}
 
+HCLIB.SupportetLanguages = {
+    ["GER"] = true,
+    ["ENG"] = true,
+    ["ESP"] = true,
+    ["JAP"] = true,
+}
+
 HCLIB.Debugmode = true; 
+
 
 --[[                     < -- LOADFUNCTIONS -- >                     ]]--
 
@@ -107,7 +115,7 @@ local LoadScripts = function()
             include( "hclib/scripts/" .. v .. "/sh_load.lua" ); 
        
             HCLIB.FoundedScripts[err.Scriptindex] = true;
-
+ 
             if ( SERVER ) then 
 
                 if not file.Exists( "hclib/scripts.json", "DATA" ) then 
@@ -184,7 +192,7 @@ lf( "hclib/sql" );
 
 lf( "hclib/vgui" );
 
-lf( "hclib/vgui/mainmenu" );
+lf( "hclib/vgui/mainmenu" ); 
 
 lf( "hclib/vgui/utils" );
 
@@ -226,27 +234,10 @@ local Initialize = function()
     
     lf( "hclib/vgui/utils" );
 
-    lf( "hclib/core" );
+    lf( "hclib/core" ); 
  
     LoadScripts();
 
 end; hook.Add( "Initialize", "_HCLib.Initialize", Initialize );
 
-local reload = function(ply,cmd,args,argStr)
-
-    if ply:IsSuperAdmin() then 
-
-        lf( "hclib/functions" );
-
-        lf( "hclib/gui" );
-    
-        lf( "hclib/sql" );
-    
-        lf( "hclib/vgui" );
-    
-        LoadScripts();
-
-    end;
-
-end; concommand.Add( "hclib_reload", reload );
-
+HCLIB.isInit = false; // IMPORTANT FOR FUNCTION, WICH RUN ONLY ONE TIME

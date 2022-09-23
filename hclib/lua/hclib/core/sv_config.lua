@@ -26,25 +26,9 @@ THIS IS THE LIBRARY FOR ALL OF HEXAGON CRYPTICS SCRIPTS!!
 
 < ---------- (DONT EDIT ANYTHING OF THE CODE!!!) ---------- >
 ]]--  
- 
-HCLIB.Config = {
-    Language = {  
-        ["main"] = {
-            ["ENG"] = {
-                ["ManageModules"] = "Manage Modules",
-                ["Home"] = "Home",
-                ["MENU.Information.ifModulesmanage"] = "INFO: Changes will be visible, if you restart the Server or Map!",
-                ["Configuration"] = "Configuration",
-                ["s.back"] = "back",
-            },
-            ["DE"] = {
-            },
-        },
-    },
-    Cfg = {
-        ["main"] = {
-            Language = "ENG",
-        },
-    }
 
-}   
+HCLIB.Config = {
+    Cfg = {},
+    Language = {},
+    AccessGroups = {}, // SERVER ONLY
+}    

@@ -8,6 +8,12 @@
 		},
 		{
 			"path": "..\\svwlist"
+		},
+		{
+			"path": "../hclib_sam_integrate"
+		},
+		{
+			"path": "../sam-143"
 		}
 	]
 }

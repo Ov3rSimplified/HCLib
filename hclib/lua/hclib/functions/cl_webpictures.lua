@@ -1,3 +1,4 @@
+
 --[[                       
     bbbbbbbb            
     HHHHHHHHH     HHHHHHHHH             CCCCCCCCCCCCC     LLLLLLLLLLL                    iiii       b::::::b            
@@ -27,45 +28,33 @@ THIS IS THE LIBRARY FOR ALL OF HEXAGON CRYPTICS SCRIPTS!!
 < ---------- (DONT EDIT ANYTHING OF THE CODE!!!) ---------- >
 ]]--  
 
-local PANEL = {};
+file.CreateDir("hclib/cache/img");
 
-local white = Color( 255, 255, 255 );
+file.CreateDir("hclib/cache/img");
+    
+HCLIB.CachedImgurImage = HCLIB.CachedImgurImage or {}
 
-local red = Color( 250, 0, 0, 255 );
+function HCLIB:GetImgurImage( ImgurID )
 
-local BlueMain = Color( 22, 23, 35, 255 );
+    if HCLIB.CachedImgurImage[ ImgurID ] then
 
-local BlueSecond = Color( 22, 23, 41, 255 )
+        return HCLIB.CachedImgurImage[ ImgurID ];
 
-local Purplemain = Color( 63, 15, 164, 255);
+    elseif file.Exists( "hclib/cache/img/" .. ImgurID .. ".png", "DATA" ) then
 
-function PANEL:Init()
+        HCLIB.CachedImgurImage[ ImgurID ] = Material( "data/hclib/cache/img/" .. ImgurID .. ".png", "noclamp smooth" );
 
-    self:SetAlpha( 0 ); 
+    else
+        http.Fetch( "https://i.imgur.com/" .. ImgurID .. ".png", function( Body, Len, Headers )
+            
+            file.Write( "hclib/cache/img/" .. ImgurID .. ".png", Body );
 
-    self:AlphaTo( 255, 0.25, 0 ); 
+            HCLIB.CachedImgurImage[ ImgurID ] = Material( "data/hclib/cache/img/" .. ImgurID .. ".png", "noclamp smooth");
 
-    self.Paint = nil; 
-
-
-    self.Topbar = vgui.Create( "DPanel", self ); 
-
-    self.Topbar:Dock( TOP ); 
-
-    self.Topbar:DockMargin( 120, 9, 120, 0 ); 
-
-    self.Topbar:SetTall( 60 );
-
-    self.Topbar.Paint = function( me, w, h )
-        
-        draw.RoundedBox( 19, 0, 1, w, h - 2, Purplemain );
-
-        draw.RoundedBox( 15, 0, 0, w, h - 8, BlueSecond );
-
-        draw.SimpleText( "Home", "HCLib.VGUI.HOME.Title", w / 2, h / 2 - 10, white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER);
+        end);
 
     end;
 
-end;
+    return HCLIB.CachedImgurImage[ ImgurID ];
 
-vgui.Register("hclib_cfg_home", PANEL, "DPanel") 
+end;

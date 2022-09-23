@@ -76,6 +76,8 @@ function PANEL:Init()
     local function items()
 
         for k, v in pairs( HCLIB.FoundedScripts ) do 
+            
+            if( k == "main" ) then continue end;
 
             local script = vgui.Create( "DButton", self.Scrollmenu );
 
@@ -179,7 +181,7 @@ function PANEL:Init()
 
         draw.SimpleText( "!", "HCLib.VGUI.40", 15, h / 2 - 2, white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER);
 
-        draw.SimpleText( HCLIB:L("main", "MENU.Information.ifModulesmanage"), "HCLib.VGUI.35", w / 2 - 60, h / 2 - 3, white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER);
+        draw.SimpleText( HCLIB:L("main", "MENU.Information.ifModulesmanage"), "HCLib.VGUI.35", w / 2 - 30, h / 2 - 3, white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER);
 
     end;
 

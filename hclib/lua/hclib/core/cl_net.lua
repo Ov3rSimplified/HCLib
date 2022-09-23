@@ -33,10 +33,9 @@ net.Receive( "HCLIB.ManagedScripts" , function()
 
     local tbl = HCLIB:ReadCompressedTable();
 
-    HCLIB.ScriptManaged = tbl
+    HCLIB.ScriptManaged = tbl;
 
 end );
-
 
 concommand.Add("HCLIB.GiveMeManual", function( ply, cmd, args, argstr )
 
@@ -44,18 +43,37 @@ concommand.Add("HCLIB.GiveMeManual", function( ply, cmd, args, argstr )
 
     net.SendToServer();
 
-
-
-end)
+end );
 
 --[[ < ---------- ( CONFIG ) ---------- > ]]--
 
-net.Receive( "HCLIB.GetConfig", function( )
-
+net.Receive( "HCLIB.GetConfig", function()
     local tbl = HCLIB:ReadCompressedTable();
 
+
+    HCLIB.Config.AccessGroups = nil;
+
     HCLIB.Config = tbl;
-    PrintTable( HCLIB.Config )
+
+    --PrintTable( HCLIB.Config );
+
+end );
+
+
+if GAMEMODE then 
+
+    net.Start("HCLIB.GetConfig");
+
+    net.SendToServer();
+
+end;
+
+hook.Add( "Initialize", "HCLIB.Synchconfigto", function()
+    
+    net.Start("HCLIB.GetConfig");
+
+    net.SendToServer();
+
 end );
 
 hook.Add( "InitPostEntity", "HCLIB.SynchConfig", function( ply )
@@ -64,5 +82,25 @@ hook.Add( "InitPostEntity", "HCLIB.SynchConfig", function( ply )
 
     net.SendToServer();
 
+    net.Start("HCLIB.ManagedScripts");
+
+    net.SendToServer();
+
 end );
  
+
+
+concommand.Add( "gf", function()
+
+
+ --   HCLIB.Config.Cfg["main"].AdminMode = "SAddM"
+    
+ --   net.Start("HCLIB.SetConfig");
+  --      HCLIB:WriteCompressedTable( HCLIB.Config );
+   --     net.WriteString( "main" );
+    --    net.WriteString( "Config" );
+    --net.SendToServer();
+
+
+    print( HCLIB.Admin:HasPermission( LocalPlayer(), "main", "HCLIB.Access" ) )
+end ) 

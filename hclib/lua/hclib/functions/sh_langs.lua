@@ -1,3 +1,4 @@
+
 --[[                       
     bbbbbbbb            
     HHHHHHHHH     HHHHHHHHH             CCCCCCCCCCCCC     LLLLLLLLLLL                    iiii       b::::::b            
@@ -27,45 +28,20 @@ THIS IS THE LIBRARY FOR ALL OF HEXAGON CRYPTICS SCRIPTS!!
 < ---------- (DONT EDIT ANYTHING OF THE CODE!!!) ---------- >
 ]]--  
 
-local PANEL = {};
+function HCLIB:L(sriptname, phrase)
 
-local white = Color( 255, 255, 255 );
+    if HCLIB.Config == nil or HCLIB.Config.Language == nil then return "Error #LANGNOTFOUND! " end;
 
-local red = Color( 250, 0, 0, 255 );
+    if table.IsEmpty(HCLIB.Config) or table.IsEmpty(HCLIB.Config.Language) then return "Error #LANGNOTFOUND! " end;
 
-local BlueMain = Color( 22, 23, 35, 255 );
+    if HCLIB.Config.Language[sriptname] == nil then return "Error #LANGNOTFOUND! " end;
 
-local BlueSecond = Color( 22, 23, 41, 255 )
+    if HCLIB.Config.Language[sriptname][HCLIB.Config.Cfg["main"].Language][phrase] == nil then 
 
-local Purplemain = Color( 63, 15, 164, 255);
-
-function PANEL:Init()
-
-    self:SetAlpha( 0 ); 
-
-    self:AlphaTo( 255, 0.25, 0 ); 
-
-    self.Paint = nil; 
-
-
-    self.Topbar = vgui.Create( "DPanel", self ); 
-
-    self.Topbar:Dock( TOP ); 
-
-    self.Topbar:DockMargin( 120, 9, 120, 0 ); 
-
-    self.Topbar:SetTall( 60 );
-
-    self.Topbar.Paint = function( me, w, h )
-        
-        draw.RoundedBox( 19, 0, 1, w, h - 2, Purplemain );
-
-        draw.RoundedBox( 15, 0, 0, w, h - 8, BlueSecond );
-
-        draw.SimpleText( "Home", "HCLib.VGUI.HOME.Title", w / 2, h / 2 - 10, white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER);
+        return tostring(HCLIB.Config.Language[sriptname]["ENG"][phrase]);
 
     end;
 
-end;
+    return tostring(HCLIB.Config.Language[sriptname][HCLIB.Config.Cfg["main"].Language][phrase]);
 
-vgui.Register("hclib_cfg_home", PANEL, "DPanel") 
+end;

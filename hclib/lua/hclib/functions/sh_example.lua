@@ -37,149 +37,16 @@ function HCLIB:ConsoleMessage(mode, text)
 
     end;
 
-end;
+    if mode == "info" then 
 
-function HCLIB:WriteCompressedTable(table)
-    
-    local data = util.TableToJSON(table);
-    
-    data = util.Compress(data); 
-    
-    net.WriteInt(#data, 32);
-    
-    net.WriteData(data, #data);
-
-end;
-
-
-function HCLIB:ReadCompressedTable()
-    
-    local num = net.ReadInt(32);
-    
-    local data = net.ReadData(num);
-    
-    return util.JSONToTable(util.Decompress(data)); 
-
-end;
-
-
-function HCLIB:L(sriptname, phrase)
-
-    if HCLIB.Config == nil or HCLIB.Config.Language == nil then return "Error #LANGNOTFOUND! " end;
-
-    if table.IsEmpty(HCLIB.Config) or table.IsEmpty(HCLIB.Config.Language) then return "Error #LANGNOTFOUND! " end;
-
-    if HCLIB.Config.Language[sriptname] == nil then return "Error #LANGNOTFOUND! " end;
-
-    if HCLIB.Config.Language[sriptname][HCLIB.Config.Cfg["main"].Language][phrase] == nil then 
-
-        return tostring(HCLIB.Config.Language[sriptname]["ENG"][phrase]);
-
-    end;
-
-    return tostring(HCLIB.Config.Language[sriptname][HCLIB.Config.Cfg["main"].Language][phrase]);
-
-end
-
-if ( CLIENT ) then 
-
-    file.CreateDir("hclib/cache/img");
-
-    file.CreateDir("hclib/cache/img");
-    
-    HCLIB.CachedImgurImage = HCLIB.CachedImgurImage or {}
-
-    function HCLIB:GetImgurImage( ImgurID )
- 
-        if HCLIB.CachedImgurImage[ ImgurID ] then
-
-            return HCLIB.CachedImgurImage[ ImgurID ];
-
-        elseif file.Exists( "hclib/cache/img/" .. ImgurID .. ".png", "DATA" ) then
-
-            HCLIB.CachedImgurImage[ ImgurID ] = Material( "data/hclib/cache/img/" .. ImgurID .. ".png", "noclamp smooth" );
-
-        else
-            http.Fetch( "https://i.imgur.com/" .. ImgurID .. ".png", function( Body, Len, Headers )
-                
-                file.Write( "hclib/cache/img/" .. ImgurID .. ".png", Body );
-
-                HCLIB.CachedImgurImage[ ImgurID ] = Material( "data/hclib/cache/img/" .. ImgurID .. ".png", "noclamp smooth");
-
-            end);
-
-        end;
-
-        return HCLIB.CachedImgurImage[ ImgurID ];
+        MsgC( Color( 222, 23, 208), "[HCLIB]", Color(250,92,0), " - [INFO] ", Color(255,255,255), text, "\n" );
 
     end;
     
-    PrintTable(HCLIB.CachedImgurImage)
+    if mode == "success" then 
 
-
-
-
-
-
-
-
-    local scrollingtext_store = {}
-    local particles_store = {}
-    function HCLIB:SimpleScrollingText(scrollid, text, font, x, y, color, ax, ay)
-
-        ax = ax or 0
-
-        ay = ay or 0
-
-        if (!scrollid) then
-
-            scrollid = table.insert(scrollingtext_store, {
-                ["text"] = "",
-                
-                ["count"] = 0,
-
-                ["next"] = SysTime()
-
-            })
-
-            return scrollid
-    
-        end
-
-        if (!scrollingtext_store[scrollid]) then return end
-
-        local nowText = scrollingtext_store[scrollid]["text"]
-    
-        surface.SetFont(font)
-
-        local width, height = surface.GetTextSize(nowText)
-
-        draw.SimpleText(nowText, font, x, y, color, ax, ay)
-    
-        if (scrollingtext_store[scrollid].next <= SysTime() and scrollingtext_store[scrollid]["count"] < string.len(text)+1) then
-
-            scrollingtext_store[scrollid].next = SysTime() + 0.05
-
-            scrollingtext_store[scrollid]["text"] = scrollingtext_store[scrollid]["text"] .. string.sub(text, scrollingtext_store[scrollid]["count"], scrollingtext_store[scrollid]["count"])
-           
-            scrollingtext_store[scrollid]["count"] = scrollingtext_store[scrollid]["count"] + 1
-
-            surface.PlaySound("items/nvg_off.wav")
-
-        end
-    
-        if (scrollingtext_store[scrollid]["count"] >= string.len(text)) then
-
-            scrollingtext_store[scrollid] = nil
-
-            return -1
-
-        end
-
-        return scrollid
+        MsgC( Color( 222, 23, 208), "[HCLIB]", Color(250,92,0), " - [SUCCESS] ", Color(255,255,255), text, "\n" );
 
     end;
-
-
 
 end;

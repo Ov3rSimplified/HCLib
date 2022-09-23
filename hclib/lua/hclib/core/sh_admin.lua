@@ -27,45 +27,48 @@ THIS IS THE LIBRARY FOR ALL OF HEXAGON CRYPTICS SCRIPTS!!
 < ---------- (DONT EDIT ANYTHING OF THE CODE!!!) ---------- >
 ]]--  
 
-local PANEL = {};
+--if ( not HCLIB.Config.InitAdminInterface ) then return end;
 
-local white = Color( 255, 255, 255 );
+HCLIB.Admin = HCLIB.Admin or {};
 
-local red = Color( 250, 0, 0, 255 );
+HCLIB.Admin.PermissionGroups = HCLIB.Admin.PermissionGroups or {};
 
-local BlueMain = Color( 22, 23, 35, 255 );
-
-local BlueSecond = Color( 22, 23, 41, 255 )
-
-local Purplemain = Color( 63, 15, 164, 255);
-
-function PANEL:Init()
-
-    self:SetAlpha( 0 ); 
-
-    self:AlphaTo( 255, 0.25, 0 ); 
-
-    self.Paint = nil; 
+HCLIB.Admin.Permissions = HCLIB.Admin.Permissions or {};
 
 
-    self.Topbar = vgui.Create( "DPanel", self ); 
 
-    self.Topbar:Dock( TOP ); 
 
-    self.Topbar:DockMargin( 120, 9, 120, 0 ); 
+// < ---------- ( Hole of Checks ) ---------- >
 
-    self.Topbar:SetTall( 60 );
+function HCLIB.Admin:HasPermission( ply, class, permission )
 
-    self.Topbar.Paint = function( me, w, h )
-        
-        draw.RoundedBox( 19, 0, 1, w, h - 2, Purplemain );
+    local prank = ply:GetUserGroup();
 
-        draw.RoundedBox( 15, 0, 0, w, h - 8, BlueSecond );
+    if  ( CLIENT ) then 
 
-        draw.SimpleText( "Home", "HCLib.VGUI.HOME.Title", w / 2, h / 2 - 10, white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER);
+        net.Start( "HCLIB.CheckGoodClient" );
 
+            HCLIB:WriteCompressedTable( HCLIB.Admin.PermissionGroups );
+
+            HCLIB:WriteCompressedTable( HCLIB.Admin.Permissions );
+
+        net.SendToServer();
     end;
+
+    if table.IsEmpty( HCLIB.Admin.Permissions ) then return end;
+
+    if table.IsEmpty( HCLIB.Admin.PermissionGroups ) then return end;
+
+    if ( prank == "superadmin" ) then return true end;
+
+
+    if not HCLIB.Admin.PermissionGroups[ tostring( prank ) ] then return false end;
+
+    if not HCLIB.Admin.Permissions[ class ][ permission ] then HCLIB:ConsoleMessage("error", " The Permission don´t exist!") return false end;
+
+    if ( HCLIB.Admin.PermissionGroups[ tostring( prank ) ][ "*" ] ) then return true end;
+
+    if HCLIB.Admin.PermissionGroups[ tostring( prank ) ][ permission ] then return true else return false end;
 
 end;
 
-vgui.Register("hclib_cfg_home", PANEL, "DPanel") 

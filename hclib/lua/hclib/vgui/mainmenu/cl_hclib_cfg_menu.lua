@@ -70,17 +70,17 @@ function PANEL:Init()
 
     self.Close = vgui.Create("DButton", self.Topbar);
 
+    self.Close:SetFont( "HCLib.VGUI.70" )
+
+    self.Close:SetText( "X" )
+
     self.Close:Dock(RIGHT);
 
-    self.Close:DockMargin( 5, 5, 5, 5 )
+    self.Close:DockMargin( 5, 5, 5, 6 )
 
     self.Close:SetWide( sw * 0.04 )
 
-    self.Close:SetText( "" )
-
     self.Close.DoClick = function() selmen:Remove() end;
-
-    self.Close.Icon = Material("materials/hclib/icons/close.png") 
 
     self.Close.Paint = function( me, w, h )
 
@@ -90,11 +90,7 @@ function PANEL:Init()
             hover_color = red;
         end;
 
-        surface.SetDrawColor(hover_color);
-
-        surface.SetMaterial(me.Icon);
-
-        surface.DrawTexturedRect( 10, h / 2 - 22, w-30, h-10 );
+        me:SetTextColor( hover_color )
 
     end;
 
@@ -102,17 +98,17 @@ function PANEL:Init()
 
     self.Minimize = vgui.Create("DButton", self.Topbar);
 
+    self.Minimize:SetFont( "HCLib.VGUI.100" )
+
+    self.Minimize:SetText( "-" )
+
     self.Minimize:Dock(RIGHT);
 
-    self.Minimize:DockMargin( 5, 5, 5, 5 )
+    self.Minimize:DockMargin( 5, 5, 5, 20 )
 
-    self.Minimize:SetWide( sw * 0.04 )
-
-    self.Minimize:SetText( "" )
+    self.Minimize:SetWide( sw * 0.04 )    
 
     self.Minimize.DoClick = function() if not self.DefineMinimizeFunction() then return else self.DefineMinimizeFunction() end; end;
-
-    self.Minimize.Icon = Material("materials/hclib/icons/minimi.png") 
 
     self.Minimize.Paint = function( me, w, h )
 
@@ -122,11 +118,7 @@ function PANEL:Init()
             hover_color = red;
         end;
 
-        surface.SetDrawColor(hover_color);
-
-        surface.SetMaterial(me.Icon);
-
-        surface.DrawTexturedRect( 10, 10, w - 20, h - 15 );
+        me:SetTextColor( hover_color )
 
     end;
 
@@ -261,6 +253,7 @@ function PANEL:SideBar()
             Name = "Home",
             pnl = {},
             vname = "hclib_cfg_home",
+            active = true,
             I = {
                 Icon = Material("materials/hclib/icons/house-48.png"),
                 PosX = 33,
@@ -271,6 +264,7 @@ function PANEL:SideBar()
             Name = "Modules",
             pnl = {}, 
             vname = "hclib_cfg_modules",
+            active = true,
             I = {
                 Icon = Material("materials/hclib/icons/modules.png"),
                 PosX = 29,
@@ -281,6 +275,7 @@ function PANEL:SideBar()
             Name = "Config",
             pnl = {},
             vname = "hclib_cfg_config",
+            active = true,
             I = {
                 Icon = Material("materials/hclib/icons/gear-2-48.png"),
                 PosX = 33,
@@ -291,6 +286,7 @@ function PANEL:SideBar()
             Name = "Documentation",
             pnl = {},
             vname = "hclib_cfg_home",
+            active = false,
             I = {
                 Icon = Material("materials/hclib/icons/book-2-48.png"),
                 PosX = 33,
@@ -300,7 +296,19 @@ function PANEL:SideBar()
         {
             Name = "Credits",
             pnl = {},
-            vname = "hclib_cfg_home",
+            vname = "hclib_cfg_credits",
+            active = false,
+            I = {
+                Icon = Material("materials/hclib/icons/document-2-48.png"),
+                PosX = 33,
+                PosY = 15,
+            },
+        },
+        {
+            Name = "Credits",
+            pnl = {},
+            vname = "hclib_cfg_credits",
+            active = false,
             I = {
                 Icon = Material("materials/hclib/icons/document-2-48.png"),
                 PosX = 33,
@@ -365,9 +373,9 @@ function PANEL.SBFS:Normal(parent)
             // Icon
 
 
-            surface.SetDrawColor( white );
+            surface.SetDrawColor( v.active and white or red );
 
-            surface.SetMaterial( v.I.Icon );
+            surface.SetMaterial( v.I.Icon );    
 
             surface.DrawTexturedRect( v.I.PosX, v.I.PosY, 48, 48 );
 

@@ -1,3 +1,4 @@
+
 --[[                       
     bbbbbbbb            
     HHHHHHHHH     HHHHHHHHH             CCCCCCCCCCCCC     LLLLLLLLLLL                    iiii       b::::::b            
@@ -27,45 +28,58 @@ THIS IS THE LIBRARY FOR ALL OF HEXAGON CRYPTICS SCRIPTS!!
 < ---------- (DONT EDIT ANYTHING OF THE CODE!!!) ---------- >
 ]]--  
 
-local PANEL = {};
+local scrollingtext_store = {}
+function HCLIB:SimpleScrollingText(scrollid, text, font, x, y, color, ax, ay)
 
-local white = Color( 255, 255, 255 );
+    ax = ax or 0
 
-local red = Color( 250, 0, 0, 255 );
+    ay = ay or 0
 
-local BlueMain = Color( 22, 23, 35, 255 );
+    if (!scrollid) then
 
-local BlueSecond = Color( 22, 23, 41, 255 )
+        scrollid = table.insert(scrollingtext_store, {
+            ["text"] = "",
+            
+            ["count"] = 0,
 
-local Purplemain = Color( 63, 15, 164, 255);
+            ["next"] = SysTime()
 
-function PANEL:Init()
+        })
 
-    self:SetAlpha( 0 ); 
+        return scrollid
 
-    self:AlphaTo( 255, 0.25, 0 ); 
+    end
 
-    self.Paint = nil; 
+    if (!scrollingtext_store[scrollid]) then return end
 
+    local nowText = scrollingtext_store[scrollid]["text"]
 
-    self.Topbar = vgui.Create( "DPanel", self ); 
+    surface.SetFont(font)
 
-    self.Topbar:Dock( TOP ); 
+    local width, height = surface.GetTextSize(nowText)
 
-    self.Topbar:DockMargin( 120, 9, 120, 0 ); 
+    draw.SimpleText(nowText, font, x, y, color, ax, ay)
 
-    self.Topbar:SetTall( 60 );
+    if (scrollingtext_store[scrollid].next <= SysTime() and scrollingtext_store[scrollid]["count"] < string.len(text)+1) then
 
-    self.Topbar.Paint = function( me, w, h )
+        scrollingtext_store[scrollid].next = SysTime() + 0.05
+
+        scrollingtext_store[scrollid]["text"] = scrollingtext_store[scrollid]["text"] .. string.sub(text, scrollingtext_store[scrollid]["count"], scrollingtext_store[scrollid]["count"])
         
-        draw.RoundedBox( 19, 0, 1, w, h - 2, Purplemain );
+        scrollingtext_store[scrollid]["count"] = scrollingtext_store[scrollid]["count"] + 1
 
-        draw.RoundedBox( 15, 0, 0, w, h - 8, BlueSecond );
+        surface.PlaySound("items/nvg_off.wav")
 
-        draw.SimpleText( "Home", "HCLib.VGUI.HOME.Title", w / 2, h / 2 - 10, white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER);
+    end
 
-    end;
+    if (scrollingtext_store[scrollid]["count"] >= string.len(text)) then
+
+        scrollingtext_store[scrollid] = nil
+
+        return -1
+
+    end
+
+    return scrollid
 
 end;
-
-vgui.Register("hclib_cfg_home", PANEL, "DPanel") 

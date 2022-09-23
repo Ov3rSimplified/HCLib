@@ -26,3 +26,46 @@ THIS IS THE LIBRARY FOR ALL OF HEXAGON CRYPTICS SCRIPTS!!
 
 < ---------- (DONT EDIT ANYTHING OF THE CODE!!!) ---------- >
 ]]--  
+
+local PANEL = {};
+
+local white = Color( 255, 255, 255 );
+
+local red = Color( 250, 0, 0, 255 );
+
+local BlueMain = Color( 22, 23, 35, 255 );
+
+local BlueSecond = Color( 22, 23, 41, 255 )
+
+local Purplemain = Color( 63, 15, 164, 255);
+
+function PANEL:Init()
+
+    self:SetAlpha( 0 ); 
+
+    self:AlphaTo( 255, 0.25, 0 ); 
+
+    self.Paint = nil; 
+
+
+    self.Topbar = vgui.Create( "DPanel", self ); 
+
+    self.Topbar:Dock( TOP ); 
+
+    self.Topbar:DockMargin( 120, 9, 120, 0 ); 
+
+    self.Topbar:SetTall( 60 );
+
+    self.Topbar.Paint = function( me, w, h )
+        
+        draw.RoundedBox( 19, 0, 1, w, h - 2, Purplemain );
+
+        draw.RoundedBox( 15, 0, 0, w, h - 8, BlueSecond );
+
+        draw.SimpleText( HCLIB:L("main", "CAPS.Comingsoon"), "HCLib.VGUI.HOME.Title", w / 2, h / 2 - 10, white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER);
+
+    end;
+
+end;
+
+vgui.Register("hclib_cfg_credits", PANEL, "DPanel")

@@ -99,6 +99,8 @@ local lib = {
 
             panel.input:SetWide(  400 );
 
+            panel.input:ShortInfo( true )
+
         end;
 
 
@@ -179,34 +181,33 @@ function PANEL:Init()
 
         local function scripts()
 
-        for k,v in pairs( HCLIB.ScriptManaged ) do 
+            self.lang = vgui.Create("DButton", self.Scrollmenu );
 
-            if not HCLIB.ScriptManaged[k] then continue end;
+            self.lang:Dock( TOP );
 
-            self.btn = vgui.Create("DButton", self.Scrollmenu );
+            self.lang:SetTall( 100 );
 
-            self.btn:Dock( TOP );
+            self.lang:Dock( TOP );
 
-            self.btn:SetTall( 100 );
+            self.lang:DockMargin( 12,5,12,0 );
 
-            self.btn:Dock( TOP );
+            self.lang:SetTall( 69 );
 
-            self.btn:DockMargin( 12,5,12,0 );
+            self.lang:SetText( "" );
 
-            self.btn:SetTall( 69 );
+            self.lang:SetAlpha( 0 ); 
 
-            self.btn:SetText( "" );
+            self.lang:AlphaTo( 255, 0.25, 0 ); 
 
-            self.btn:SetAlpha( 0 ); 
-
-            self.btn:AlphaTo( 255, 0.25, 0 ); 
-
-            self.btn.Paint = function( me, w, h )
+            self.lang.Paint = function( me, w, h )
+                me.txt = HCLIB:L("main", "cfg.Language")
                 
                 me.col = BlueMain;
 
                 if ( me:IsHovered() ) then 
                     me.col = Purplemain;
+
+                    me.txt = HCLIB:L("main", "CAPS.Comingsoon")
 
                 end;
 
@@ -214,12 +215,12 @@ function PANEL:Init()
 
                 draw.RoundedBox( 15, 0, 0, w, h - 8, me.col );
 
-                draw.SimpleText(  tostring( HCLIB.ScriptBridge[k].ScriptName ), "HCLib.VGUI.HOME.Title", w / 2, h / 2 - 10, white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER );
+                draw.SimpleText(  me.txt, "HCLib.VGUI.HOME.Title", w / 2, h / 2 - 10, white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER );
 
             end;
 
-            self.btn.DoClick = function( me )
-                
+            self.lang.DoClick = function( me )
+                /*
                 local poX, posY = me:GetPos();
 
                 me:MoveTo( -1200, posY, 0.4, 0.01, -1, function( me2 )
@@ -229,9 +230,7 @@ function PANEL:Init()
 
                     self.Topbar:DockMargin( 120, 9, 120, 50 ); 
 
-                    HCLIB.ScriptBridge[k].CreateIngameConfig( lib, self.Scrollmenu );
-
-                    self.Title = k;
+                    self.Title = "Language";
 
                     local bb = vgui.Create( "DButton", self );
 
@@ -243,7 +242,7 @@ function PANEL:Init()
                     
                     bb:SetTextColor( white )
                     
-                    bb.Paint = function( me, w, h )
+                    bb.Paint  = function( me, w, h )
 
                         draw.RoundedBoxEx( 19, 0, 0, w, h, Purplemain, true, false, false, true );
 
@@ -262,12 +261,101 @@ function PANEL:Init()
                     me:Remove();    
 
                 end );
+                */
 
             end;
 
-        end;
+            for k,v in pairs( HCLIB.ScriptManaged ) do 
 
-    end;
+                    if not HCLIB.FoundedScripts[k] then continue end;
+
+                    if not HCLIB.ScriptManaged[k] then continue end;
+
+                    self.btn = vgui.Create("DButton", self.Scrollmenu );
+
+                    self.btn:Dock( TOP );
+
+                    self.btn:SetTall( 100 );
+
+                    self.btn:Dock( TOP );
+
+                    self.btn:DockMargin( 12,5,12,0 );
+
+                    self.btn:SetTall( 69 );
+
+                    self.btn:SetText( "" );
+
+                    self.btn:SetAlpha( 0 ); 
+
+                    self.btn:AlphaTo( 255, 0.25, 0 ); 
+
+                    self.btn.Paint = function( me, w, h )
+                        
+                        me.col = BlueMain;
+
+                        if ( me:IsHovered() ) then 
+                            me.col = Purplemain;
+
+                        end;
+
+                        draw.RoundedBox( 19, 0, 1, w, h - 2, Purplemain );
+
+                        draw.RoundedBox( 15, 0, 0, w, h - 8, me.col );
+
+                        draw.SimpleText(  tostring( HCLIB.ScriptBridge[k].ScriptName ), "HCLib.VGUI.HOME.Title", w / 2, h / 2 - 10, white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER );
+
+                    end;
+
+                    self.btn.DoClick = function( me )
+                        
+                        local poX, posY = me:GetPos();
+
+                        me:MoveTo( -1200, posY, 0.4, 0.01, -1, function( me2 )
+
+
+                            self.Scrollmenu:Clear();
+
+                            self.Topbar:DockMargin( 120, 9, 120, 50 ); 
+
+                            HCLIB.ScriptBridge[k].CreateIngameConfig( lib, self.Scrollmenu );
+
+                            self.Title = k;
+
+                            local bb = vgui.Create( "DButton", self );
+
+                            bb:SetSize( 100, 30 );
+
+                            bb:SetPos( 906, 874);
+
+                            bb:SetText( "← " .. HCLIB:L( "main", "s.back" ) );
+                            
+                            bb:SetTextColor( white )
+                            
+                            bb.Paint  = function( me, w, h )
+
+                                draw.RoundedBoxEx( 19, 0, 0, w, h, Purplemain, true, false, false, true );
+
+                            end;
+
+                            bb.DoClick = function( me )
+
+                                self.Scrollmenu:Clear();
+
+                                self.Title = HCLIB:L("main", "Configuration");
+
+                                scripts();
+
+                            end;
+
+                            me:Remove();    
+
+                        end );
+
+                    end;
+
+                end;
+
+            end;
 
         scripts();
 
