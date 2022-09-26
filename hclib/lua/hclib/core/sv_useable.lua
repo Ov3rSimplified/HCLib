@@ -26,33 +26,21 @@ THIS IS THE LIBRARY FOR ALL OF HEXAGON CRYPTICS SCRIPTS!!
 
 < ---------- (DONT EDIT ANYTHING OF THE CODE!!!) ---------- >
 ]]--  
- 
-function HCLIB:OpenMenu()
-        
-    if not HCLIB.Admin:HasPermission( LocalPlayer(), "main", "HCLIB.Access" ) then return end;
+
+
+concommand.Add( "HCLIB.UpdateConfigTable", function( ply, cmd, args, argStr )
     
-    if IsValid(LocalPlayer().HCLIBMinimized) then 
-
-        LocalPlayer().HCLIBMinimized:SetVisible(true)
+    if not HCLIB.Debugmode then HCLIB:ChatMessage( ply, "error", " You need to activate the Debugmode!") return end;
     
-    else    
+    if not HCLIB.Admin:HasPermission( ply, "main", "Debugging" ) then return end;
 
-        local v = vgui.Create("hclib_cfg_menu")
+    if not args[1] or not args[2] then HCLIB:ChatMessage( ply, "error", " you need to enter two arguments! ( read the wiki if you dont know it )") return end;
 
-        v:SetSize(ScrW()*0.59,ScrH()*0.9)
+    if not HCLIB.FoundedScripts[ args[1] ] then HCLIB:ChatMessage( ply, "error", " the Script('" .. args[1] .. "') doesn´t exist!" ) return end;
 
-        v:Center()
+    if not ( args[2] == "Config" or args[2] == "Language" or args[2] == "AccessGroups" or args[2] == "*" ) then HCLIB:ChatMessage( ply, "error", " The Section('" .. args[2] .."') doesn`t exist! Available Sections(Config, Language, AccessGroups, *) " ) return end;
+    
+    
+    HCLIB:UpdateConfigTable( tostring( args[1] ), tostring( args[2] )  );
 
-        v:MakePopup()
-
-        function v:DefineMinimizeFunction()
-
-            v:SetVisible(false)
-
-            LocalPlayer().HCLIBMinimized = v;
-
-        end;
-
-    end;
-
-end;
+end )

@@ -283,7 +283,7 @@ function PANEL:SideBar()
             },
         },
         {
-            Name = "Documentation",
+            Name = "Guide",
             pnl = {},
             vname = "hclib_cfg_home",
             active = false,
@@ -294,12 +294,12 @@ function PANEL:SideBar()
             },
         },
         {
-            Name = "Credits",
+            Name = "Danger Zone",
             pnl = {},
-            vname = "hclib_cfg_credits",
-            active = false,
+            vname = "hclib_cfg_dangerzone",
+            active = true,
             I = {
-                Icon = Material("materials/hclib/icons/document-2-48.png"),
+                Icon = Material("materials/hclib/icons/danger.png"),
                 PosX = 33,
                 PosY = 15,
             },

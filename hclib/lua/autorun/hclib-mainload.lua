@@ -26,7 +26,7 @@ THIS IS THE LIBRARY FOR ALL OF HEXAGON CRYPTICS SCRIPTS!!
 
 
 < ---------- (DONT EDIT ANYTHING OF THE CODE!!!) ---------- >
-]]--  
+]]--   
 
 --[[                     < -- GLOBAL VARS -- >                     ]]--
 

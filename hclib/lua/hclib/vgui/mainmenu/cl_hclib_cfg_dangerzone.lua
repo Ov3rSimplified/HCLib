@@ -62,10 +62,10 @@ function PANEL:Init()
 
         draw.RoundedBox( 15, 0, 0, w, h - 8, BlueSecond );
 
-        draw.SimpleText( HCLIB:L("main", "CAPS.Comingsoon"), "HCLib.VGUI.HOME.Title", w / 2, h / 2 - 10, white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER);
+        draw.SimpleText( HCLIB:L( "main", "DangerZone" ), "HCLib.VGUI.HOME.Title", w / 2, h / 2 - 10, white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER);
 
     end;
 
 end;
 
-vgui.Register("hclib_cfgh_hardsettings", PANEL, "DPanel")
+vgui.Register("hclib_cfg_dangerzone", PANEL, "DPanel")

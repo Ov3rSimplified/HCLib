@@ -127,12 +127,6 @@ for i = 1, 100 do
 end;
 
 
-
-
-
-
-
-
 draw.DrawCircle = function(x, y, r, col)
 
     local circle = {};

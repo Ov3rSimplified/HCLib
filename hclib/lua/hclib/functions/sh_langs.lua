@@ -36,11 +36,9 @@ function HCLIB:L(sriptname, phrase)
 
     if HCLIB.Config.Language[sriptname] == nil then return "Error #LANGNOTFOUND! " end;
 
-    if HCLIB.Config.Language[sriptname][HCLIB.Config.Cfg["main"].Language][phrase] == nil then 
+    if not HCLIB.Config.Language[sriptname][HCLIB.Config.Cfg["main"].Language] then return "Error #LANGNOTFOUND! " end;
 
-        return tostring(HCLIB.Config.Language[sriptname]["ENG"][phrase]);
-
-    end;
+    if HCLIB.Config.Language[sriptname][HCLIB.Config.Cfg["main"].Language][phrase] == nil then return tostring(HCLIB.Config.Language[sriptname]["ENG"][phrase]) end;
 
     return tostring(HCLIB.Config.Language[sriptname][HCLIB.Config.Cfg["main"].Language][phrase]);
 

@@ -39,13 +39,64 @@ function HCLIB:ConsoleMessage(mode, text)
 
     if mode == "info" then 
 
-        MsgC( Color( 222, 23, 208), "[HCLIB]", Color(250,92,0), " - [INFO] ", Color(255,255,255), text, "\n" );
+        MsgC( Color( 222, 23, 208), "[HCLIB]", Color(216,197,21), " - [INFO] ", Color(255,255,255), text, "\n" );
 
     end;
     
     if mode == "success" then 
 
         MsgC( Color( 222, 23, 208), "[HCLIB]", Color(250,92,0), " - [SUCCESS] ", Color(255,255,255), text, "\n" );
+
+    end;
+
+end;
+
+if ( CLIENT ) then 
+
+    function HCLIB:ChatMessage(mode, text)
+
+        if mode == "error" then 
+
+            chat.AddText( Color( 222, 23, 208), "[HCLIB]", Color(250,0,0), " - [ERROR] ", Color(255,255,255), text, "\n" );
+
+        end;
+
+        if mode == "info" then 
+
+            chat.AddText( Color( 222, 23, 208), "[HCLIB]", Color(250,92,0), " - [INFO] ", Color(255,255,255), text, "\n" );
+
+        end;
+        
+        if mode == "success" then 
+
+            chat.AddText( Color( 222, 23, 208), "[HCLIB]", Color(250,92,0), " - [SUCCESS] ", Color(255,255,255), text, "\n" );
+
+        end;
+
+    end;
+
+
+    net.Receive( "HCLIB.Chatmessageee", function( )
+        
+        HCLIB:ChatMessage(net.ReadString(), net.ReadString());
+
+    end )
+
+end;
+
+if ( SERVER ) then 
+
+    util.AddNetworkString( "HCLIB.Chatmessageee" )
+
+    function HCLIB:ChatMessage( ply, mode, text)
+
+        net.Start( "HCLIB.Chatmessageee" );
+
+            net.WriteString( mode );
+            
+            net.WriteString( text );
+
+        net.Send( ply );
 
     end;
 

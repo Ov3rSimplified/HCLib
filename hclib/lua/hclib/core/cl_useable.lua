@@ -26,33 +26,28 @@ THIS IS THE LIBRARY FOR ALL OF HEXAGON CRYPTICS SCRIPTS!!
 
 < ---------- (DONT EDIT ANYTHING OF THE CODE!!!) ---------- >
 ]]--  
- 
-function HCLIB:OpenMenu()
-        
-    if not HCLIB.Admin:HasPermission( LocalPlayer(), "main", "HCLIB.Access" ) then return end;
+
+concommand.Add( "HCLIB", function()
     
-    if IsValid(LocalPlayer().HCLIBMinimized) then 
+    do HCLIB:OpenMenu() end;
 
-        LocalPlayer().HCLIBMinimized:SetVisible(true)
-    
-    else    
+end);
 
-        local v = vgui.Create("hclib_cfg_menu")
 
-        v:SetSize(ScrW()*0.59,ScrH()*0.9)
+hook.Add( "OnPlayerChat", "HCLIB.CL.SayHook", function( ply, strText, bTeam, bDead )
 
-        v:Center()
+    if ( ply != LocalPlayer() ) then return end;
 
-        v:MakePopup()
+    strText = string.lower( strText );
 
-        function v:DefineMinimizeFunction()
+    if ( strText == "!hclib" or strText == "/hclib" ) then 
 
-            v:SetVisible(false)
+        do HCLIB:OpenMenu() end;
 
-            LocalPlayer().HCLIBMinimized = v;
-
-        end;
+        return true;
 
     end;
 
-end;
+
+
+end );

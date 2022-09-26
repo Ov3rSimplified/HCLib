@@ -3,7 +3,7 @@ return {
 
     ScriptName = "library",
     
-    ScriptDescription = [[]],
+    ScriptDescription = [[]], 
     
     ScriptExtraInformations = {},
     
@@ -16,6 +16,8 @@ return {
                 ["ManageModules"] = "Manage Modules",
         
                 ["Home"] = "Home",
+
+                ["DangerZone"] = "DangerZone",
         
                 ["MENU.Information.ifModulesmanage"] = "INFO: Changes will be visible, if you restart the Server or Map!",
         
@@ -37,6 +39,7 @@ return {
         },
         Cfg = {
             Language = "ENG",
+            AllowOpenwithKey = KEY_F8,
             UserGroups = { 
                 ["admin"] = {
                     [ "*" ] = true,
@@ -58,6 +61,7 @@ return {
         },  
         AccessGroups = {
             [ "HCLIB.FullAccess" ] = true,
+            [ "Debugging" ] = true,
         }
     },
      
@@ -85,11 +89,11 @@ return {
             langp.ttl:SizeToContents();
 
 
-            langp.changpnl = vgui.Create( "DComboBox", langp );
+            langp.changpnl = vgui.Create( "HCLIB.ComboBox", langp );
 
             langp.changpnl:Dock( RIGHT );
 
-            langp.changpnl:DockMargin( 0,30,8,30 );
+            langp.changpnl:DockMargin( 0,20,8,20 );
 
             langp.changpnl:SetWide( ScrW() * 0.15    );
 
@@ -104,8 +108,6 @@ return {
             end;
 
             langp.changpnl.OnSelect  = function( _, _, index )
-                
-                --print( index )
 
                 HCLIB.Config.Cfg[ "main" ].Language = tostring( index );
 

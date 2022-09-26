@@ -71,6 +71,10 @@ end;
 
 function HCLIB:SetScript( Script, Bool ) // STRING Script, BOOL Bool
     
+--    if not isstring( Script ) then return end;
+
+--    if not isbool( Bool ) then return end;
+
     local filer = {};
 
     local readcurcookie = util.JSONToTable( cookie.GetString("HCLIB.Scripts", nil) )
@@ -78,6 +82,8 @@ function HCLIB:SetScript( Script, Bool ) // STRING Script, BOOL Bool
     if not cookie.GetString("HCLIB.Scripts", nil ) then 
 
         cookie.Set( "HCLIB.Scripts", util.TableToJSON( { [ Script ] = Bool } ) );
+
+        if HCLIB.Debugmode then HCLIB:ConsoleMessage( "info", " *{SetScript} - Created Cookie Manual" ); end; 
 
     elseif readcurcookie[ Script ] == nil then 
 
@@ -87,6 +93,9 @@ function HCLIB:SetScript( Script, Bool ) // STRING Script, BOOL Bool
 
         cookie.Set( "HCLIB.Scripts", util.TableToJSON( tbl ) ); 
 
+        if HCLIB.Debugmode then HCLIB:ConsoleMessage( "info", " *{SetScript} - Force Inserted when index is NIL" ); end; 
+
+
     else 
 
         local tbl = util.JSONToTable( cookie.GetString("HCLIB.Scripts", nil) );
@@ -95,13 +104,16 @@ function HCLIB:SetScript( Script, Bool ) // STRING Script, BOOL Bool
 
         cookie.Set( "HCLIB.Scripts", util.TableToJSON( tbl ) ); 
 
-    end;
+        if HCLIB.Debugmode then HCLIB:ConsoleMessage( "info", " *{SetScript} - ELSE" ); end; 
 
-    HCLIB.ScriptManaged[ Script ] = Bool;
+
+    end;
+    
+    HCLIB.ScriptManaged[ Script ] = util.JSONToTable( cookie.GetString("HCLIB.Scripts", nil) );
 
     net.Start("HCLIB.ManagedScripts");
 
-        HCLIB:WriteCompressedTable(HCLIB.ScriptManaged);
+        HCLIB:WriteCompressedTable( util.JSONToTable( cookie.GetString( "HCLIB.Scripts" ) ) );
 
     net.Broadcast();
 
@@ -349,9 +361,6 @@ function HCLIB:GetConfig()
  
 end;
 
- 
-
-
 
 
 
@@ -373,7 +382,8 @@ local function GETCONFIG( len, ply )
 end; 
 
 local function CHANGECONFIGVAR( len, ply ) 
-    --if ply:GetUserGroup()
+
+    HCLIB.Admin:HasPermission( ply, "main", "HCLIB.Access" );
 
     local ReceivedTable = HCLIB:ReadCompressedTable();
 
@@ -434,6 +444,8 @@ end;
 
 local function MANAGETO( len, ply )
       
+    HCLIB.Admin:HasPermission( ply, "main", "HCLIB.Access" );
+
     local str = net.ReadString();
 
     local bool = net.ReadBool();
