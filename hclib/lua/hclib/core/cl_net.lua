@@ -48,14 +48,12 @@ end );
 --[[ < ---------- ( CONFIG ) ---------- > ]]--
 
 net.Receive( "HCLIB.GetConfig", function()
+    
     local tbl = HCLIB:ReadCompressedTable();
-
 
     HCLIB.Config.AccessGroups = nil;
 
     HCLIB.Config = tbl;
-
-    --PrintTable( HCLIB.Config );
 
 end );
 

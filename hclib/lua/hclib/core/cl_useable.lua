@@ -48,6 +48,27 @@ hook.Add( "OnPlayerChat", "HCLIB.CL.SayHook", function( ply, strText, bTeam, bDe
 
     end;
 
-
-
 end );
+
+
+local delay = 0
+hook.Add( "PlayerButtonDown", "PlayerButtonDownWikiExample2", function( ply, button )
+
+    if delay < CurTime() then 
+
+        if ( ply != LocalPlayer() ) then return end;
+
+        if not HCLIB.Config.Cfg[ "main" ].AllowOpenwithKey then return end;
+
+        if ( button == HCLIB.Config.Cfg[ "main" ].OpenKey ) then 
+
+
+            HCLIB:OpenMenu();
+
+        end;
+
+        delay = CurTime() + 0.2
+
+    end;
+
+end)

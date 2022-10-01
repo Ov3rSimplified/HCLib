@@ -28,9 +28,9 @@ THIS IS THE LIBRARY FOR ALL OF HEXAGON CRYPTICS SCRIPTS!!
 < ---------- (DONT EDIT ANYTHING OF THE CODE!!!) ---------- >
 ]]--  
 
-file.CreateDir("hclib/cache/img");
+file.CreateDir( "hclib/cache/img" );
 
-file.CreateDir("hclib/cache/img");
+file.CreateDir( "hclib/cache/img" );
     
 HCLIB.CachedImgurImage = HCLIB.CachedImgurImage or {}
 

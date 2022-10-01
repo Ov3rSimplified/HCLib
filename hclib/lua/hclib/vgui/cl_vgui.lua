@@ -148,3 +148,4 @@ draw.DrawCircle = function(x, y, r, col)
     surface.DrawPoly(circle);
 	
 end;
+

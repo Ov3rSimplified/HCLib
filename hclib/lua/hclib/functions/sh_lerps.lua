@@ -22,21 +22,21 @@
 Author: TwinKlee / Ov3rSimplified
 THIS IS THE LIBRARY FOR ALL OF HEXAGON CRYPTICS SCRIPTS!!
 
+!! THIS CODE IS NOT ORIGINAL FROM ME !!
+!! CREDIITS TO BILLY( https://github.com/WilliamVenner ) <3 !!
+!! ONLY INTEGRATED IN THE HCLIB API !!
 
+< ---------- (DONT EDIT ANYTHING OF THE CODE!!!) ---------- > ]]--  
 
-
-< ---------- (DONT EDIT ANYTHING OF THE CODE!!!) ---------- >
-]]--  
-
-function HCLIB:LerpColor(from, to, time)
+function HCLIB:LerpColor( from, to, time )
 
 	local interpolation_data = {
 
-		current_color = table.Copy(from),
+		current_color = table.Copy( from ),
 
-		from = table.Copy(from),
+		from = table.Copy( from ),
 
-		to = table.Copy(to),
+		to = table.Copy( to ),
 
 		ceil_r = to.r > from.r,
 
@@ -130,7 +130,6 @@ function HCLIB:LerpColor(from, to, time)
    return interpolation_data;
 
 end
-
 
 function HCLIB:Lerp(from, to, time)
     

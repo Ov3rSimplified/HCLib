@@ -28,58 +28,59 @@ THIS IS THE LIBRARY FOR ALL OF HEXAGON CRYPTICS SCRIPTS!!
 < ---------- (DONT EDIT ANYTHING OF THE CODE!!!) ---------- >
 ]]--  
 
-local scrollingtext_store = {}
-function HCLIB:SimpleScrollingText(scrollid, text, font, x, y, color, ax, ay)
+local sre = {};
 
-    ax = ax or 0
+function HCLIB:SimpleScrollingText( scrollid, text, font, x, y, color, ax, ay )
 
-    ay = ay or 0
+    ax = ax or 0;
 
-    if (!scrollid) then
+    ay = ay or 0;
 
-        scrollid = table.insert(scrollingtext_store, {
-            ["text"] = "",
+    if ( !scrollid ) then
+
+        scrollid = table.insert( sre, {
+            [ "text" ] = "",
             
-            ["count"] = 0,
+            [ "count" ] = 0,
 
-            ["next"] = SysTime()
+            [ "next" ] = SysTime()
 
-        })
+        } );
 
-        return scrollid
+        return scrollid;
 
-    end
+    end;
 
-    if (!scrollingtext_store[scrollid]) then return end
+    if ( !sre[ scrollid ] ) then return end;
 
-    local nowText = scrollingtext_store[scrollid]["text"]
+    local nowText = sre[ scrollid ][ "text" ];
 
-    surface.SetFont(font)
+    surface.SetFont( font );
 
-    local width, height = surface.GetTextSize(nowText)
+    local width, height = surface.GetTextSize( nowText );
 
-    draw.SimpleText(nowText, font, x, y, color, ax, ay)
+    draw.SimpleText( nowText, font, x, y, color, ax, ay );
 
-    if (scrollingtext_store[scrollid].next <= SysTime() and scrollingtext_store[scrollid]["count"] < string.len(text)+1) then
+    if ( sre[ scrollid ].next <= SysTime() and sre[ scrollid ][ "count" ] < string.len( text ) + 1 ) then
 
-        scrollingtext_store[scrollid].next = SysTime() + 0.05
+        sre[ scrollid ].next = SysTime() + 0.05;
 
-        scrollingtext_store[scrollid]["text"] = scrollingtext_store[scrollid]["text"] .. string.sub(text, scrollingtext_store[scrollid]["count"], scrollingtext_store[scrollid]["count"])
+        sre[ scrollid ]["text"] = sre[ scrollid ][ "text" ] .. string.sub( text, sre[ scrollid ][ "count" ], sre[ scrollid ][ "count" ] );
         
-        scrollingtext_store[scrollid]["count"] = scrollingtext_store[scrollid]["count"] + 1
+        sre[ scrollid ][ "count" ] = sre[ scrollid ][ "count" ] + 1;
 
-        surface.PlaySound("items/nvg_off.wav")
+        surface.PlaySound( "items/nvg_off.wav" );
 
-    end
+    end;
 
-    if (scrollingtext_store[scrollid]["count"] >= string.len(text)) then
+    if ( sre[ scrollid ][ "count" ] >= string.len( text ) ) then
 
-        scrollingtext_store[scrollid] = nil
+        sre[ scrollid ] = nil;
 
-        return -1
+        return -1;
 
-    end
+    end;
 
-    return scrollid
+    return scrollid;
 
 end;

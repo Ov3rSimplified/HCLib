@@ -31,7 +31,11 @@ return {
 
                 ["maincfg.ChangeLanguage"] = "Change Language",
 
-                ["allanuankba"] = "dld",
+                ["maincfg.ActviateKey"] = "Open With Keybind",
+
+
+
+                ["vgui.binder.pressakey"] = "Press a Key",
         
             },
             ["GER"] = {
@@ -39,7 +43,8 @@ return {
         },
         Cfg = {
             Language = "ENG",
-            AllowOpenwithKey = KEY_F8,
+            AllowOpenwithKey = true,
+            OpenKey = KEY_F8,
             UserGroups = { 
                 ["admin"] = {
                     [ "*" ] = true,
@@ -99,8 +104,6 @@ return {
 
             langp.changpnl:SetValue( HCLIB.Config.Cfg[ "main" ].Language )
 
-            --langp.changpnl.Paint = nil;
-
             for k, v in pairs( HCLIB.SupportetLanguages ) do 
 
                 langp.changpnl:AddChoice( k )
@@ -123,7 +126,48 @@ return {
 
             end;
 
+
+
+
+            local aopen = lib.AddBlanKPanel( parent );
+            
+            aopen.ttl = vgui.Create( "DLabel", aopen );
+
+            aopen.ttl:Dock( LEFT );
+
+            aopen.ttl:DockMargin( 4, 0, 0, 3 );
+
+            aopen.ttl:SetText( HCLIB:L( "main", "maincfg.ActviateKey" ) );
+
+            aopen.ttl:SetFont( "HCLib.VGUI.50" );
+
+            aopen.ttl:SetTextColor( Color(255,255,255) );
+
+            aopen.ttl:SizeToContents();
+
+            
+
+            aopen.changpnl = vgui.Create( "HCLIB.Switch", aopen );
+
+            aopen.changpnl:Dock( RIGHT );
+
+            aopen.changpnl:DockMargin( 0, 30, 8, 0 );
+
+            aopen.changpnl:SetText( "" );
+
+            aopen.changpnl:SetChecked( HCLIB.Config.Cfg[ "main" ].AllowOpenwithKey )
     
+
+
+            aopen.d2 = vgui.Create( "HCLIB.Binder", aopen );
+
+            aopen.d2:Dock( RIGHT );
+
+            aopen.d2:SetFont( "HCLib.VGUI.80" )
+
+            aopen.d2:DockMargin( 0,0,0,0 );
+
+            aopen.d2:SetWide( 60 );
 
     end,
     

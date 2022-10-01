@@ -70,10 +70,6 @@ function HCLIB:ManagedScripts() // Read Scripts
 end;
 
 function HCLIB:SetScript( Script, Bool ) // STRING Script, BOOL Bool
-    
---    if not isstring( Script ) then return end;
-
---    if not isbool( Bool ) then return end;
 
     local filer = {};
 
@@ -94,7 +90,6 @@ function HCLIB:SetScript( Script, Bool ) // STRING Script, BOOL Bool
         cookie.Set( "HCLIB.Scripts", util.TableToJSON( tbl ) ); 
 
         if HCLIB.Debugmode then HCLIB:ConsoleMessage( "info", " *{SetScript} - Force Inserted when index is NIL" ); end; 
-
 
     else 
 

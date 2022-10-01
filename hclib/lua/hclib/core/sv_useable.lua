@@ -28,8 +28,9 @@ THIS IS THE LIBRARY FOR ALL OF HEXAGON CRYPTICS SCRIPTS!!
 ]]--  
 
 
-concommand.Add( "HCLIB.UpdateConfigTable", function( ply, cmd, args, argStr )
-    
+
+local function UCT( ply, cmd, args, argStr )
+
     if not HCLIB.Debugmode then HCLIB:ChatMessage( ply, "error", " You need to activate the Debugmode!") return end;
     
     if not HCLIB.Admin:HasPermission( ply, "main", "Debugging" ) then return end;
@@ -40,7 +41,10 @@ concommand.Add( "HCLIB.UpdateConfigTable", function( ply, cmd, args, argStr )
 
     if not ( args[2] == "Config" or args[2] == "Language" or args[2] == "AccessGroups" or args[2] == "*" ) then HCLIB:ChatMessage( ply, "error", " The Section('" .. args[2] .."') doesn`t exist! Available Sections(Config, Language, AccessGroups, *) " ) return end;
     
-    
     HCLIB:UpdateConfigTable( tostring( args[1] ), tostring( args[2] )  );
+    
+end;
 
-end )
+concommand.Add( "HCLIB.UpdateConfigTable", UCT );
+
+concommand.Add( "HCLIB.UCT", UCT )
