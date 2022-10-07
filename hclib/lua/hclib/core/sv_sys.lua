@@ -120,11 +120,11 @@ function HCLIB:CIACISQL()  // Check if all Configs in SQL
      
     for k, v in pairs( HCLIB.FoundedScripts ) do 
 
-        if not sql.QueryValue( "SELECT Class FROM HCLIB_Config WHERE Class = '" .. k .. "'" ) then 
+        if not HCLIB.SQL:QueryValue( "SELECT Class FROM HCLIB_Config WHERE Class = '" .. k .. "'" ) then 
 
             local Query = "INSERT INTO HCLIB_Config( Class, Language, Config, AccessGroups ) VALUES(" .. st( k ) .. ", " .. st( util.TableToJSON( HCLIB.ScriptBridge[k].Config.Language ) ) .. ", " .. st( util.TableToJSON( HCLIB.ScriptBridge[k].Config.Cfg ) ) ..", " .. st( util.TableToJSON( HCLIB.ScriptBridge[k].Config.AccessGroups ) ) ..")"
 
-            sql.Query( Query )
+            HCLIB.SQL:Query( Query, nil, nil )
 
         end
 
@@ -134,7 +134,7 @@ end;
 
 function HCLIB:NSQLCT( class, section, newtable ) // New SQL Config Table
 
-    sql.Query( "UPDATE HCLIB_Config SET " .. SQLStr( section ) .. " = " .. SQLStr( util.TableToJSON( newtable ) ) .. " WHERE Class = " .. SQLStr( class ) )
+    HCLIB.SQL:Query( "UPDATE HCLIB_Config SET " .. SQLStr( section ) .. " = " .. SQLStr( util.TableToJSON( newtable ) ) .. " WHERE Class = " .. SQLStr( class ), nil, nil )
 
 end;
 
@@ -142,7 +142,7 @@ function HCLIB:UpdateConfigTables()
 
     for k, v in pairs( HCLIB.FoundedScripts ) do 
 
-        if sql.QueryValue( "SELECT Class FROM HCLIB_Config WHERE Class = '" .. k .. "'" ) then 
+        if HCLIB.SQL:QueryValue( "SELECT Class FROM HCLIB_Config WHERE Class = '" .. k .. "'" ) then 
  
 
             table.Merge(HCLIB.Config.Language[k], HCLIB.ScriptBridge[k].Config.Language);
@@ -179,7 +179,7 @@ function HCLIB:UpdateConfigTable( Class, Section  )
 
     if not HCLIB.FoundedScripts[ Class ] then 
     
-        HCLIB:ConsoleMessage("error", " The class don`t exist!")
+        HCLIB:ConsoleMessage( "error", " The class don`t exist!")
 
         return 
     
@@ -192,7 +192,7 @@ function HCLIB:UpdateConfigTable( Class, Section  )
     
     end;
 
-    if sql.QueryValue( "SELECT Class FROM HCLIB_Config WHERE Class = '" .. Class .. "'" ) then 
+    if HCLIB.SQL:QueryValue( "SELECT Class FROM HCLIB_Config WHERE Class = '" .. Class .. "'" ) then 
 
         HCLIB:Switch( tostring( Section ) , {
             ["*"] = function()
@@ -221,7 +221,7 @@ function HCLIB:UpdateConfigTable( Class, Section  )
 
                 HCLIB:SynchPermissions()
 
-                HCLIB:GetConfig();
+                HCLIB:GetConfig(); 
                 
             end,
             ["Language"] = function()
@@ -232,7 +232,7 @@ function HCLIB:UpdateConfigTable( Class, Section  )
 
                 HCLIB:NSQLCT( Class, "Language", langtbl );
 
-                HCLIB:GetConfig();
+                HCLIB:GetConfig();   
 
             end,
             ["Config"] = function()
@@ -258,7 +258,7 @@ function HCLIB:UpdateConfigTable( Class, Section  )
 
                 HCLIB:SynchPermissions();
 
-                HCLIB:GetConfig();
+                HCLIB:GetConfig();      
 
             end,
         }, function()
@@ -277,9 +277,9 @@ function HCLIB:ResetConfigData()
 
     local st = SQLStr
      
-    for k, v in pairs( sql.Query( "SELECT * FROM HCLIB_Config" ) ) do 
+    for k, v in pairs( HCLIB.SQL:Query( "SELECT * FROM HCLIB_Config" ) ) do 
 
-        if HCLIB.FoundedScripts[ v.Class ] then     --sql.QueryValue( "SELECT Class FROM HCLIB_Config WHERE Class = " .. st( v.Class ) ) then 
+        if HCLIB.FoundedScripts[ v.Class ] then 
 
             print( v.Class .. " FOUNDED" )
             
@@ -293,6 +293,7 @@ function HCLIB:ResetConfigData()
 
 end;
 
+
 function HCLIB:GetConfig()
     
     local SendToPly = function()
@@ -305,17 +306,17 @@ function HCLIB:GetConfig()
 
     end;
 
-    local sqltable = sql.Query( "SELECT * FROM HCLIB_Config" );
+    local sqltable = HCLIB.SQL:Query( "SELECT * FROM HCLIB_Config", nil, nil );
 
     for k, v in pairs( sqltable ) do 
 
     if ( HCLIB.ScriptManaged[ v.Class ] == false ) then continue end;
  
-        local languagetbl = { [v.Class] = util.JSONToTable( v.Language ) };
+        local languagetbl = util.JSONToTable( v.Language );
         
-        local AccessGrouptbl = { [v.Class] = util.JSONToTable( v.AccessGroups ) };
+        local AccessGrouptbl = util.JSONToTable( v.AccessGroups );
 
-        local configtbl = { [v.Class] = util.JSONToTable( v.Config ) };
+        local configtbl = util.JSONToTable( v.Config );
 
 
         if table.IsEmpty( util.JSONToTable( v.Config ) ) then 
@@ -324,7 +325,7 @@ function HCLIB:GetConfig()
 
         else
 
-            table.Merge(HCLIB.Config.Cfg, configtbl);
+            HCLIB.Config.Cfg[ v.Class ] = configtbl;
         
         end;
 
@@ -334,7 +335,7 @@ function HCLIB:GetConfig()
 
         else
 
-            table.Merge(HCLIB.Config.Language, languagetbl);
+            HCLIB.Config.Language[ v.Class ] = languagetbl;
  
         end;    
 
@@ -345,7 +346,7 @@ function HCLIB:GetConfig()
         else
 
 
-            table.Merge(HCLIB.Config.AccessGroups, AccessGrouptbl);
+            HCLIB.Config.AccessGroups[ v.Class ] = AccessGrouptbl;
 
         end;
         
@@ -355,8 +356,9 @@ function HCLIB:GetConfig()
     end;
  
 end;
-
-
+ 
+  
+--HCLIB:UpdateConfigTable( "swbfiiesc", "*"  )
 
 
 --[[ < ---------- ( NET FUNCTIONS ) ---------- > ]]--
@@ -389,12 +391,12 @@ local function CHANGECONFIGVAR( len, ply )
 
     if not HCLIB.FoundedScripts[ Class ] then return end;
 
-    if not ( Section == "Config" and "Language" and "AccessGroups" ) then  HCLIB:ConsoleMessage("error", " Invalid Section!") return end;
+    if not ( Section == "Config" or Section ==  "Language" or Section == "AccessGroups" ) then  HCLIB:ConsoleMessage("error", " Invalid Section!") return end;
 
 
-    if sql.QueryValue( "SELECT Class FROM HCLIB_Config WHERE Class = '" .. Class .. "'" ) then 
+    if HCLIB.SQL:QueryValue( "SELECT Class FROM HCLIB_Config WHERE Class = '" .. Class .. "'" ) then 
 
-        local data = util.JSONToTable( sql.QueryValue( "SELECT " .. tostring( Section ) .. " FROM HCLIB_Config WHERE Class = '" .. Class .. "'" ) ); 
+        local data = util.JSONToTable( HCLIB.SQL:QueryValue( "SELECT " .. tostring( Section ) .. " FROM HCLIB_Config WHERE Class = '" .. Class .. "'" ) ); 
 
 
         HCLIB:Switch( Section, {
@@ -464,8 +466,9 @@ net.Receive( "HCLIB.CheckIfAllConfigInSQL", CIACISQL );
 
 --[[ < ---------- ( HOOKS ) ---------- > ]]--
 
+hook.Add( "PlayerInitialSpawn", "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!HCLIB.SynchEneabledScripts", function( ply )
 
-hook.Add( "InitPostEntity", "HCLIB.SynchEneabledScripts", function( ply )
+    print( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
     HCLIB:ManagedScripts();
 
@@ -483,7 +486,7 @@ hook.Add( "InitPostEntity", "HCLIB.SynchEneabledScripts", function( ply )
         if table.IsEmpty( HCLIB.Config.AccessGroups[k] ) then continue end;
 
         HCLIB.Admin.Permissions[k] = v
- 
+
     end;
 
     net.Start( "HCLIB.SynchPermissions" );
@@ -494,14 +497,14 @@ hook.Add( "InitPostEntity", "HCLIB.SynchEneabledScripts", function( ply )
 
     net.Broadcast();
 
-
 end );
+
 
 --[[ < ---------- ( SQL INIT ) ---------- > ]]--
 
 
 // CREATE MAIN CONFIG 
-sql.Query( "CREATE TABLE IF NOT EXISTS HCLIB_Config( Class TEXT NOT NULL PRIMARY KEY, Language TEXT, Config TEXT, AccessGroups TEXT )" );
+HCLIB.SQL:Query( "CREATE TABLE IF NOT EXISTS HCLIB_Config( Class TEXT NOT NULL PRIMARY KEY, Language TEXT, Config TEXT, AccessGroups TEXT )" );
 
 
 if ( SERVER ) then 

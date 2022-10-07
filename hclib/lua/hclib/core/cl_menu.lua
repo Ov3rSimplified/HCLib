@@ -29,7 +29,7 @@ THIS IS THE LIBRARY FOR ALL OF HEXAGON CRYPTICS SCRIPTS!!
  
 function HCLIB:OpenMenu()
         
-    if not HCLIB.Admin:HasPermission( LocalPlayer(), "main", "HCLIB.Access" ) then return end;
+    if not HCLIB.Admin:HasPermission( LocalPlayer(), "main", "HCLIB.Access" ) then print( "nooo") return end;
     
     if IsValid(LocalPlayer().HCLIBMinimized) then 
 

@@ -46,35 +46,57 @@ end;
 
 
 --[[ < ---------- ( DEBUGGING ) ---------- > ]]
-// Colors
-local purple = Color(255,0,230);
 
-local red = Color(235,12,12);
+if ( CLIENT ) then 
 
-local white = Color(255,255,255);
+    function HCLIB:ChatMessage(mode, text)
 
-local blue = Color(12,164,235);
+        if mode == "error" then 
 
-local green = Color(6,241,29);
+            chat.AddText( Color( 222, 23, 208), "[HCLIB]", Color(250,0,0), " - [ERROR] ", Color(255,255,255), text, "\n" );
 
-local orange = Color(255,102,0);
+        end;
 
-local yellow = Color(212,255,0);
+        if mode == "info" then 
+
+            chat.AddText( Color( 222, 23, 208), "[HCLIB]", Color(250,92,0), " - [INFO] ", Color(255,255,255), text, "\n" );
+
+        end;
+        
+        if mode == "success" then 
+
+            chat.AddText( Color( 222, 23, 208), "[HCLIB]", Color(250,92,0), " - [SUCCESS] ", Color(255,255,255), text, "\n" );
+
+        end;
+
+    end;
 
 
-function HCLIB:Errorlog( difficulty, title, description, fixtext )
+    net.Receive( "HCLIB.Chatmessageee", function( )
+        
+        HCLIB:ChatMessage(net.ReadString(), net.ReadString());
 
-    MsgC( "\n\n\n\n\n\n[[ < ---------- ( ERROR LOG ) ---------- > ]]\n " );
+    end )
 
-    MsgC( Color(255,0,230), " - [HCLIB] ", white, " RECEIVED AN ERROR!!! \n");
-    MsgC( yellow, "  - Difficulty: ", difficulty == 1 and green or difficulty == 2 and orange or difficulty == 3 and red or white, difficulty == 1 and "low" or difficulty == 2 and "medium" or difficulty == 3 and "hard" or "N/A", "\n\n"  );
-    MsgC( white, " - " .. title or "N/A", "\n" );
+end;
 
- 
+if ( SERVER ) then 
 
-end
---HCLIB:Errorlog( 1, "Your Console has an error!", description, fixtext )
+    util.AddNetworkString( "HCLIB.Chatmessageee" )
 
+    function HCLIB:ChatMessage( ply, mode, text)
+
+        net.Start( "HCLIB.Chatmessageee" );
+
+            net.WriteString( mode );
+            
+            net.WriteString( text );
+
+        net.Send( ply );
+
+    end;
+
+end;
 
 
 --[[ < ---------- ( SWITCH ) ---------- > ]]
@@ -111,25 +133,3 @@ function HCLIB:Switch( var, cases, default )
 end;
 
  
-
-/*
-HCLIB:Switch( variablemabler, {
-
-    ["1"] = function()
-
-        print("Akemat");
-    
-    end,
-    
-    ["2"] = function()
-    
-        print("Tameka")
-    
-    end,
-
-}, function()
-    
-    print( "Keine Tamy oda Akemy :C " );
-
-end )
-*/

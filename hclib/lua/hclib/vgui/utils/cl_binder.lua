@@ -44,6 +44,8 @@ local Purplemain = Color( 63, 15, 164, 255);
 
 local color = Color( Purplemain["r"], Purplemain["g"], Purplemain["b"], 20 );
 
+local Roundcol = Purplemain;
+
 local trad, speed, speed2 = 360, 4, 12;
 
 local Rad, Alpha, ClickX, ClickY = 0, 0, 0, 0;
@@ -54,13 +56,15 @@ function PANEL:Init()
 
 	self.BadKeys = {};
 
+	self.Disabled = false;
+
 	self:SetSelectedNumber( 0 )
 
 	self:SetSize( 60, 30 )
 
 	self:SetFont( font )
 
-	self:SetTextColor( white );
+	self:SetTextColor( white )
 
 end
 
@@ -78,6 +82,8 @@ end
 
 function PANEL:DoClick()
 
+	if ( self.Disabled ) then return end;
+
 	ClickX, ClickY = self:CursorPos();
 
 	Rad = 0;
@@ -93,6 +99,8 @@ function PANEL:DoClick()
 end
 
 function PANEL:DoRightClick()
+
+	if ( self.Disabled ) then return end;
 
 	self:SetText( "NONE" )
 
@@ -116,9 +124,27 @@ function PANEL:Think()
 
 	if ( input.IsKeyTrapping() && self.Trapping ) then
 
+		if ( self.Disabled ) then return end;
+
 		local code = input.CheckKeyTrapping()
 
 		if ( code ) then
+
+			if ( self.BadKeys[ code ] ) then 
+
+				self:SetText( "NICHT ERLAUBT" );
+
+				self:SetValue( 0 );
+
+				ClickX, ClickY = 24, 48;
+
+				Rad = 0;
+
+				Alpha = color["a"];
+
+				return;
+
+			end;
 
 			if ( code == KEY_ESCAPE ) then
 
@@ -173,6 +199,12 @@ end
 function PANEL:OnChange()
 end
 
+function PANEL:SetDisabled( bool )
+	
+	self.Disabled = bool;
+
+end;
+
 
 function PANEL:Paint( w, h )
 	
@@ -180,9 +212,15 @@ function PANEL:Paint( w, h )
 
 	draw.RoundedBox( 15, 2, 2, w - 4, h - 4, BlueSecond );
 
+	if ( self.Disabled ) then 
+
+		draw.RoundedBox( 15, 2, 2, w - 4, h - 4, Color( red[ "a" ], red[ "g" ], red[ "b" ], 90 ) );
+
+	end;
+
 	if ( Alpha >= 1 ) then
 
-		surface.SetDrawColor( Color( Purplemain["r"], Purplemain["g"], Purplemain["b"], 20 ) );
+		surface.SetDrawColor( color );
 
 		draw.NoTexture();
 

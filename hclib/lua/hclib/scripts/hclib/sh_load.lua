@@ -29,11 +29,15 @@ return {
         
                 ["cfg.Language"] = "Language phrases",
 
+                ["Language"] = "Language",
+
                 ["maincfg.ChangeLanguage"] = "Change Language",
 
                 ["maincfg.ActviateKey"] = "Open With Keybind",
 
+                ["NoDataFound"] = "NO DATA FOUND",  
 
+                ["search"] = "search...",
 
                 ["vgui.binder.pressakey"] = "Press a Key",
         
@@ -50,22 +54,12 @@ return {
                     [ "*" ] = true,
                 },
             },
-            Sql = {
-                UseMySQL = false,
-    
-                HostIP = "",
-            
-                Username = "",
-            
-                Password = "",
-             
-                Databasename = "",
-             
-                Port = 3306,
-            }
         },  
         AccessGroups = {
             [ "HCLIB.FullAccess" ] = true,
+            [ "HCLIB.ScriptEdit" ] = true,
+            [ "HCLIB.SQLEdit" ] = true,
+            [ "HCLIB.Mainedit" ] = true,
             [ "Debugging" ] = true,
         }
     },
@@ -77,7 +71,11 @@ return {
     CreateIngameConfig = function( lib, parent )
 
 
-       local langp = lib.AddBlanKPanel( parent );
+        ///////////////////////////////////
+        ///////      LANGUAGE       ///////
+        ///////////////////////////////////
+
+        local langp = lib.AddBlanKPanel( parent ); // CREATE PANEL
             
             langp.ttl = vgui.Create( "DLabel", langp );
 
@@ -126,10 +124,11 @@ return {
 
             end;
 
+        ///////////////////////////////////
+        ///////       KEYBIND       ///////
+        ///////////////////////////////////
 
-
-
-            local aopen = lib.AddBlanKPanel( parent );
+        local aopen = lib.AddBlanKPanel( parent );
             
             aopen.ttl = vgui.Create( "DLabel", aopen );
 
@@ -146,28 +145,57 @@ return {
             aopen.ttl:SizeToContents();
 
             
-
             aopen.changpnl = vgui.Create( "HCLIB.Switch", aopen );
 
             aopen.changpnl:Dock( RIGHT );
 
-            aopen.changpnl:DockMargin( 0, 30, 8, 0 );
+            aopen.changpnl:DockMargin( 0, 33, 8, 0 );
 
             aopen.changpnl:SetText( "" );
 
             aopen.changpnl:SetChecked( HCLIB.Config.Cfg[ "main" ].AllowOpenwithKey )
+
+            aopen.changpnl.OnChange = function( self )
+
+                HCLIB.Config.Cfg[ "main" ].AllowOpenwithKey = tobool( self:GetChecked() );
+
+                net.Start( "HCLIB.SetConfig" );
+                    
+                    HCLIB:WriteCompressedTable( HCLIB.Config );
+
+                    net.WriteString( "main" );
+
+                    net.WriteString( "Config" );
+
+                net.SendToServer();
+
+            end;
+
+            function aopen.changpnl:Think()
+                
+                aopen.d2:SetDisabled( self:GetChecked() == true and false or self:GetChecked() == false and true  );
+
+            end;
     
-
-
             aopen.d2 = vgui.Create( "HCLIB.Binder", aopen );
 
             aopen.d2:Dock( RIGHT );
 
             aopen.d2:SetFont( "HCLib.VGUI.80" )
 
-            aopen.d2:DockMargin( 0,0,0,0 );
+            aopen.d2:DockMargin( 0, 6, 40, 9 );
 
-            aopen.d2:SetWide( 60 );
+            aopen.d2:SetWide( 100 );
+
+            aopen.d2:SetValue( HCLIB.Config.Cfg[ "main" ].OpenKey );
+
+            aopen.d2:SetDisabled( aopen.changpnl:GetChecked() == true and false or aopen.changpnl:GetChecked() == false and true );
+
+            aopen.d2.OnChange = function( self )
+                
+                HCLIB.Config.Cfg[ "main" ].OpenKey = self:GetValue();
+
+            end;
 
     end,
     

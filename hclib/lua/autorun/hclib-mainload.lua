@@ -35,7 +35,7 @@ HCLIB = HCLIB or {}
 HCLIB.Scripts = HCLIB.Scripts  or {}
 
 HCLIB.FoundedScripts = HCLIB.FoundedScripts  or {}
-
+ 
 HCLIB.ScriptManaged = HCLIB.ScriptManaged or {}
 
 HCLIB.ScriptBridge = HCLIB.ScriptBridge or {}
@@ -50,6 +50,44 @@ HCLIB.SupportetLanguages = {
 }
 
 HCLIB.Debugmode = true; 
+
+
+
+if ( SERVER ) then 
+
+    if not cookie.GetString( "HCLIB.SQL" ) then
+
+        cookie.Set( "HCLIB.SQL", util.TableToJSON( { use = false, IP = "0.0.0.0", UserName = "", Password = "", Databasename = "", Port = "3306"  } ) );
+
+    end;
+    
+end;
+
+
+
+
+
+function HCLIB:ConsoleMessage(mode, text)
+
+    if mode == "error" then 
+
+        MsgC( Color( 222, 23, 208), "[HCLIB]", Color(250,0,0), " - [ERROR] ", Color(255,255,255), text, "\n" );
+
+    end;
+
+    if mode == "info" then 
+
+        MsgC( Color( 222, 23, 208), "[HCLIB]", Color(216,197,21), " - [INFO] ", Color(255,255,255), text, "\n" );
+
+    end;
+    
+    if mode == "success" then 
+
+        MsgC( Color( 222, 23, 208), "[HCLIB]", Color(64,244,14), " - [SUCCESS] ", Color(255,255,255), text, "\n" );
+
+    end;
+
+end;
 
 
 --[[                     < -- LOADFUNCTIONS -- >                     ]]--
@@ -83,7 +121,7 @@ local LoadFiles = function(dir)
 			AddCSLuaFile(dir.. "/".. v);
 
 		end;
-		
+	
 		if string.StartWith(v, "sv") then
 
 			if SERVER then 
@@ -91,16 +129,19 @@ local LoadFiles = function(dir)
 				local load = include(dir.. "/".. v);
 
 				if load then load() end;
-
+ 
 			end;
 
 		end;
 
+        HCLIB:ConsoleMessage( "success", " LoadedFile: " .. v)
 	end;
 
-end;
+end; 
 
 local LoadScripts = function()
+
+    HCLIB:ConsoleMessage( "info", " Start Loading Scripts..." )
 
     local files, folder = file.Find( "hclib/scripts/*", "LUA" );
 
@@ -131,9 +172,9 @@ local LoadScripts = function()
                     if filer[err.Scriptindex] == false then 
                         
                         if HCLIB.Debugmode then 
+
+                            HCLIB:ConsoleMessage( "info", err.Scriptindex .. " are disabled" )
                             
-                            print(err.Scriptindex .. " 1");
-                        
                         end; 
                         
                         continue; 
@@ -142,17 +183,21 @@ local LoadScripts = function()
                         
                         if HCLIB.Debugmode then 
                             
-                            print(err.Scriptindex .. " 0");
-                        
+                            HCLIB:ConsoleMessage( "info", " loaded " .. err.Scriptindex .. " Normally" )
+
                         end; 
                     
                     else
                     
-                        print(err.Scriptindex .. " infile");
-
                         filer[err.Scriptindex] = true; 
 
                         file.Write( "hclib/scripts.json", util.TableToJSON( filer ) );
+
+                        if HCLIB.Debugmode then 
+
+                            HCLIB:ConsoleMessage( "info", " loaded " .. err.Scriptindex .. " and wrote again in the json " )
+
+                        end;
 
                     end;
  
@@ -161,14 +206,10 @@ local LoadScripts = function()
             end;
 
             HCLIB.Scripts[err.Scriptindex] = {};
-
+            
             err.LoadFiles()
+            HCLIB:ConsoleMessage( "success", "Script: " .. err.Scriptindex .. " loaded" )
 
-            if SERVER then 
-
-                --err.
-
-            end;
 
             HCLIB.ScriptBridge[err.Scriptindex] = err;
  
@@ -183,6 +224,8 @@ end;
 local lf = LoadFiles;
 
 --[[                     < -- LOAD SECTOR -- >                     ]]--
+
+HCLIB:ConsoleMessage( "info", " Start Loading")
 
 lf( "hclib/functions" );
 
@@ -210,7 +253,7 @@ if GAMEMODE then
     
     lf( "hclib/vgui" );
 
-    lf( "hclib/vgui/mainmenu" );
+    lf( "hclib/vgui/mainmenu" ); 
 
     lf( "hclib/vgui/utils" );
         
@@ -240,4 +283,4 @@ local Initialize = function()
 
 end; hook.Add( "Initialize", "_HCLib.Initialize", Initialize );
 
-HCLIB.isInit = false; // IMPORTANT FOR FUNCTION, WICH RUN ONLY ONE TIME
+HCLIB.isInit = false; // IMPORTANT FOR FUNCTION, WICH RUN ONLY ONE TIME  

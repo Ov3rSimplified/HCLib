@@ -84,3 +84,70 @@ function HCLIB:SimpleScrollingText( scrollid, text, font, x, y, color, ax, ay )
     return scrollid;
 
 end;
+
+local blur = Material("pp/blurscreen");
+
+function HCLIB:DrawBlurRect( x, y, w, h, amount, density )
+
+    surface.SetDrawColor(255, 255, 255);
+
+    surface.SetMaterial(blur);
+
+    for i = 1, density do
+
+		blur:SetFloat( "$blur", ( i / 3 ) * ( amount or 6 ) );
+
+        blur:Recompute();
+
+        render.UpdateScreenEffectTexture();
+
+        render.SetScissorRect( x, y, x + w, y + h, true );
+
+        surface.DrawTexturedRect( 0 * -1, 0 * -1, ScrW(), ScrH() );
+
+        render.SetScissorRect( 0, 0, 0, 0, false );
+
+    end;
+
+end;
+
+
+function HCLIB:ClickAnimation( trad, speed, speed2, color )
+
+    local data = {};
+
+    local self = data;
+
+    self.Rad, self.Alpha, self.ClickX, self.ClickY = 0, 0, 0, 0;
+
+    function data:Click( me )
+
+        self.ClickX, self.ClickY = me:CursorPos();
+
+        self.Rad = 0;
+
+        self.Alpha = color["a"];
+
+    end;
+
+    function data:Animate()
+
+        if ( self.Alpha >= 1 ) then
+
+            surface.SetDrawColor( Color( color["r"], color["g"], color["b"], 20 ) );
+
+            draw.NoTexture();
+
+            draw.DrawCircle( self.ClickX, self.ClickY, self.Rad, color );
+
+            self.Rad = Lerp( FrameTime() * speed, self.Rad, trad || w );
+
+            self.Alpha = Lerp( FrameTime() * speed2, self.Alpha, 0 );
+
+        end;
+
+    end;
+
+    return data;
+    
+end

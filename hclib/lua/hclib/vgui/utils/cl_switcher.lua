@@ -22,8 +22,9 @@
 Author: TwinKlee / Ov3rSimplified
 THIS IS THE LIBRARY FOR ALL OF HEXAGON CRYPTICS SCRIPTS!!
 
-
-
+!! THIS CODE IS NOT ORIGINAL FROM ME !!
+!! CREDIITS TO BILLY( https://github.com/WilliamVenner ) <3 !!
+!! ONLY INTEGRATED IN THE HCLIB API !!
 
 < ---------- (DONT EDIT ANYTHING OF THE CODE!!!) ---------- >
 ]]--  
@@ -262,6 +263,7 @@ function PANEL:SetChecked(active, animate)
 		else
 
 			self.ColorInterpolation = HCLIB:LerpColor(off_color, off_color, .25);
+			
 		end;
 
 	end;

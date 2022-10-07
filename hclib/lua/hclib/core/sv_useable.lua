@@ -42,9 +42,15 @@ local function UCT( ply, cmd, args, argStr )
     if not ( args[2] == "Config" or args[2] == "Language" or args[2] == "AccessGroups" or args[2] == "*" ) then HCLIB:ChatMessage( ply, "error", " The Section('" .. args[2] .."') doesn`t exist! Available Sections(Config, Language, AccessGroups, *) " ) return end;
     
     HCLIB:UpdateConfigTable( tostring( args[1] ), tostring( args[2] )  );
+
+    if HCLIB.Debugmode then 
+ 
+        HCLIB:ConsoleMessage( "info", " You have send a Updaterequest!" );
+
+    end;
+    
     
 end;
-
 concommand.Add( "HCLIB.UpdateConfigTable", UCT );
 
 concommand.Add( "HCLIB.UCT", UCT )

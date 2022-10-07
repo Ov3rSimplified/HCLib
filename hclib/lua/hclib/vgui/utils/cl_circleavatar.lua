@@ -1,4 +1,3 @@
-
 --[[                       
     bbbbbbbb            
     HHHHHHHHH     HHHHHHHHH             CCCCCCCCCCCCC     LLLLLLLLLLL                    iiii       b::::::b            
@@ -21,129 +20,95 @@
 < ---------- (INFORMATIONS) ---------- >
 Author: TwinKlee / Ov3rSimplified
 THIS IS THE LIBRARY FOR ALL OF HEXAGON CRYPTICS SCRIPTS!!
+]]
 
 
+local PANEL = {};
 
+local cos, sin, rad = math.cos, math.sin, math.rad;
 
-< ---------- (DONT EDIT ANYTHING OF THE CODE!!!) ---------- >
-]]--  
+AccessorFunc( PANEL, "m_masksize", "MaskSize", FORCE_NUMBER );
 
+function PANEL:Init()
 
-surface.CreateFont( "HCLib.VGUI.MENU.Title", {
-	font = "Montserrat",
-	extended = false,
-	size = 60,
-	weight = 500,
-	blursize = 0,
-	scanlines = 0,
-	antialias = true,
-	underline = false,
-	italic = false,
-	strikeout = false,
-	symbol = false,
-	rotary = false,
-	shadow = false,
-	additive = false,
-	outline = false,
-} )
+    self.Avatar = vgui.Create( "AvatarImage", self );
 
-surface.CreateFont( "HCLib.VGUI.MENU.Minimize", {
-	font = "Montserrat",
-	extended = false,
-	size = 20,
-	weight = 500,
-	blursize = 0,
-	scanlines = 0,
-	antialias = true,
-	underline = false,
-	italic = false,
-	strikeout = false,
-	symbol = false,
-	rotary = false,
-	shadow = false,
-	additive = false,
-	outline = false,
-} )
+    self.Avatar:SetPaintedManually( true );
 
-
-surface.CreateFont( "HCLib.VGUI.HOME.Title", {
-	font = "Montserrat",
-	extended = false,
-	size = 60,
-	weight = 500,
-	blursize = 0,
-	scanlines = 0,
-	antialias = true,
-	underline = false,
-	italic = false,
-	strikeout = false,
-	symbol = false,
-	rotary = false,
-	shadow = false,
-	additive = false,
-	outline = false,
-} )
-
-surface.CreateFont( "HCLib.VGUI.MODULES.edButton", {
-	font = "Montserrat",
-	extended = false,
-	size = 40,
-	weight = 500,
-	blursize = 0,
-	scanlines = 0,
-	antialias = true,
-	underline = false,
-	italic = false,
-	strikeout = false,
-	symbol = false,
-	rotary = false,
-	shadow = false,
-	additive = false,
-	outline = false,
-} )
-
-for i = 1, 100 do 
-
-	surface.CreateFont( "HCLib.VGUI." .. i, {
-		font = "Montserrat",
-		extended = false,
-		size = i,
-		weight = 500,
-		blursize = 0,
-		scanlines = 0,
-		antialias = true,
-		underline = false,
-		italic = false,
-		strikeout = false,
-		symbol = false,
-		rotary = false,
-		shadow = false,
-		additive = false,
-		outline = false,
-	} )
+	self:SetMaskSize( self:GetWide() / 2 );
 
 end;
 
+function PANEL:PerformLayout()
 
-draw.DrawCircle = function(x, y, r, col)
+    self.Avatar:SetSize( self:GetWide(), self:GetTall() );
 
-    local circle = {};
+end;
+
+function PANEL:SetPlayer( id )
+
+	self.Avatar:SetPlayer( id, self:GetWide() );
+
+end;
+
+function PANEL:Paint( w, h )
+
+    render.ClearStencil();
+
+    render.SetStencilEnable( true );
+
+    render.SetStencilWriteMask( 1 );
+
+    render.SetStencilTestMask( 1 );
+
+    render.SetStencilFailOperation( STENCILOPERATION_REPLACE );
+
+    render.SetStencilPassOperation( STENCILOPERATION_ZERO );
+
+    render.SetStencilZFailOperation( STENCILOPERATION_ZERO );
+
+    render.SetStencilCompareFunction( STENCILCOMPARISONFUNCTION_NEVER );
+
+    render.SetStencilReferenceValue( 1 );
+
+	local _m = self.m_masksize;
+
+	local circle, t = {}, 0;
 
     for i = 1, 360 do
 
-        circle[i] = {};
+        t = rad( i * 720 ) / 720;
 
-        circle[i].x = x + math.cos(math.rad(i * 360) / 360) * r;
-
-        circle[i].y = y + math.sin(math.rad(i * 360) / 360) * r;
+        circle[ i ] = { x = w / 2 + cos( t ) * _m, y = h / 2 + sin( t ) * _m };
 
     end;
 
-    surface.SetDrawColor(col);
+	draw.NoTexture();
 
-    draw.NoTexture();
+	surface.SetDrawColor( color_white );
 
-    surface.DrawPoly(circle);
-	
-end;
+	surface.DrawPoly( circle );
 
+    render.SetStencilFailOperation( STENCILOPERATION_ZERO );
+
+    render.SetStencilPassOperation( STENCILOPERATION_REPLACE );
+
+    render.SetStencilZFailOperation( STENCILOPERATION_ZERO );
+
+    render.SetStencilCompareFunction( STENCILCOMPARISONFUNCTION_EQUAL );
+
+    render.SetStencilReferenceValue( 1 );
+
+    self.Avatar:SetPaintedManually( false );
+
+    self.Avatar:PaintManual();
+
+    self.Avatar:SetPaintedManually( true );
+
+    render.SetStencilEnable( false );
+
+    render.ClearStencil();
+
+end
+
+vgui.Register( "HCLIB.CircleAvatar", PANEL );

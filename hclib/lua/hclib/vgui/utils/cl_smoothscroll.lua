@@ -1,4 +1,3 @@
-
 --[[                       
     bbbbbbbb            
     HHHHHHHHH     HHHHHHHHH             CCCCCCCCCCCCC     LLLLLLLLLLL                    iiii       b::::::b            
@@ -22,128 +21,97 @@
 Author: TwinKlee / Ov3rSimplified
 THIS IS THE LIBRARY FOR ALL OF HEXAGON CRYPTICS SCRIPTS!!
 
+!! THIS CODE IS NOT ORIGINAL FROM ME !!
+!! CREDIITS TO Minbird( https://github.com/Minbird) <3 !!
+!! ONLY INTEGRATED IN THE HCLIB API !!
 
+< ---------- (DONT EDIT ANYTHING OF THE CODE!!!) ---------- > ]]--  
 
+local length = 0.5; -- animation length.
 
-< ---------- (DONT EDIT ANYTHING OF THE CODE!!!) ---------- >
-]]--  
+local ease = 0.25; -- easing animation IN and OUT.
 
+local amount = 30; -- scroll amount.
 
-surface.CreateFont( "HCLib.VGUI.MENU.Title", {
-	font = "Montserrat",
-	extended = false,
-	size = 60,
-	weight = 500,
-	blursize = 0,
-	scanlines = 0,
-	antialias = true,
-	underline = false,
-	italic = false,
-	strikeout = false,
-	symbol = false,
-	rotary = false,
-	shadow = false,
-	additive = false,
-	outline = false,
-} )
-
-surface.CreateFont( "HCLib.VGUI.MENU.Minimize", {
-	font = "Montserrat",
-	extended = false,
-	size = 20,
-	weight = 500,
-	blursize = 0,
-	scanlines = 0,
-	antialias = true,
-	underline = false,
-	italic = false,
-	strikeout = false,
-	symbol = false,
-	rotary = false,
-	shadow = false,
-	additive = false,
-	outline = false,
-} )
-
-
-surface.CreateFont( "HCLib.VGUI.HOME.Title", {
-	font = "Montserrat",
-	extended = false,
-	size = 60,
-	weight = 500,
-	blursize = 0,
-	scanlines = 0,
-	antialias = true,
-	underline = false,
-	italic = false,
-	strikeout = false,
-	symbol = false,
-	rotary = false,
-	shadow = false,
-	additive = false,
-	outline = false,
-} )
-
-surface.CreateFont( "HCLib.VGUI.MODULES.edButton", {
-	font = "Montserrat",
-	extended = false,
-	size = 40,
-	weight = 500,
-	blursize = 0,
-	scanlines = 0,
-	antialias = true,
-	underline = false,
-	italic = false,
-	strikeout = false,
-	symbol = false,
-	rotary = false,
-	shadow = false,
-	additive = false,
-	outline = false,
-} )
-
-for i = 1, 100 do 
-
-	surface.CreateFont( "HCLib.VGUI." .. i, {
-		font = "Montserrat",
-		extended = false,
-		size = i,
-		weight = 500,
-		blursize = 0,
-		scanlines = 0,
-		antialias = true,
-		underline = false,
-		italic = false,
-		strikeout = false,
-		symbol = false,
-		rotary = false,
-		shadow = false,
-		additive = false,
-		outline = false,
-	} )
+local function sign( num )
+    
+    return num > 0;
 
 end;
 
+local function getBiggerPos( signOld, signNew, old, new )
 
-draw.DrawCircle = function(x, y, r, col)
+    if signOld != signNew then return new end;
 
-    local circle = {};
+    if signNew then
 
-    for i = 1, 360 do
+        return math.max(old, new);
 
-        circle[i] = {};
-
-        circle[i].x = x + math.cos(math.rad(i * 360) / 360) * r;
-
-        circle[i].y = y + math.sin(math.rad(i * 360) / 360) * r;
+    else
+        
+        return math.min(old, new);
 
     end;
 
-    surface.SetDrawColor(col);
-
-    draw.NoTexture();
-
-    surface.DrawPoly(circle);
-	
 end;
+
+local dermaCtrs = vgui.GetControlTable( "HCLIB.DVScroll" );
+
+local tScroll = 0;
+
+local newerT = 0;
+
+function dermaCtrs:AddScroll( dlta )
+
+    self.Old_Pos = nil;
+
+    self.Old_Sign = nil;
+
+    local OldScroll = self:GetScroll();
+
+    dlta = dlta * amount;
+    
+    local anim = self:NewAnimation( length, 0, ease );
+
+    anim.StartPos = OldScroll;
+
+    anim.TargetPos = OldScroll + dlta + tScroll;
+
+    tScroll = tScroll + dlta;
+
+    local ctime = RealTime(); -- does not work correctly with CurTime, when in single player game and in game menu (then CurTime get stuck). I think RealTime is better.
+    
+    local doing_scroll = true;
+
+    newerT = ctime;
+    
+    anim.Think = function( anim, pnl, fraction )
+
+        local nowpos = Lerp( fraction, anim.StartPos, anim.TargetPos );
+
+        if ctime == newerT then
+
+            self:SetScroll( getBiggerPos( self.Old_Sign, sign(dlta), self.Old_Pos, nowpos ) );
+
+            tScroll = tScroll - (tScroll * fraction);
+            
+        end;
+
+        if doing_scroll then -- it must be here. if not, sometimes scroll get bounce.
+
+            self.Old_Sign = sign(dlta);
+
+            self.Old_Pos = nowpos;
+
+        end;
+
+        if ctime != newerT then doing_scroll = false end;
+
+    end;
+
+    return math.Clamp( self:GetScroll() + tScroll, 0, self.CanvasSize ) != self:GetScroll();
+
+end;
+
+derma.DefineControl( "HCLIB.DVScroll", "Smooth Scrollbar", dermaCtrs, "Panel" )
 

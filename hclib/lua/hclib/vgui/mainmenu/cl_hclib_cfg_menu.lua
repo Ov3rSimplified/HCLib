@@ -282,7 +282,7 @@ function PANEL:SideBar()
                 PosY = 15,
             },
         },
-        {
+   --[[ {
             Name = "Guide",
             pnl = {},
             vname = "hclib_cfg_home",
@@ -292,7 +292,7 @@ function PANEL:SideBar()
                 PosX = 33,
                 PosY = 15,
             },
-        },
+        },]]
         {
             Name = "Danger Zone",
             pnl = {},
@@ -304,7 +304,7 @@ function PANEL:SideBar()
                 PosY = 15,
             },
         },
-        {
+        --[[{
             Name = "Credits",
             pnl = {},
             vname = "hclib_cfg_credits",
@@ -314,7 +314,7 @@ function PANEL:SideBar()
                 PosX = 33,
                 PosY = 15,
             },
-        },
+        },]]
     };
 
     self.SBFS:Normal(self.SelectionMenu);

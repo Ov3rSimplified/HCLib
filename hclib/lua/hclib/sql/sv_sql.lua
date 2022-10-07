@@ -51,39 +51,47 @@ HCLIB.SQL = {};
 require( "mysqloo" );           
 
 concommand.Add("SQL.DeleteTable", function(ply,_,args)
+
 	HCLIB.SQL:Query("DROP TABLE IF EXISTS `".. args[1] .."`")
+
 end)
 
---[[ < ---------- ( SQL FUNCTIONS ) ---------- > ]]--
+--[[ < ---------- ( Code ) ---------- > ]]--
 
-function HCLIB:CfgTable()
 
-	if ( not sql.QueryValue( "SELECT Class FROM HCLIB_Config WHERE Class = 'main'" ) ) then 
-		
-		return "ERROR";
-	
-	else
+function HCLIB.SQL.GetConnection()
 
-		return util.JSONToTable( sql.QueryValue( "SELECT Config FROM HCLIB_Config WHERE Class = 'main'" ) );
-	
+	if not cookie.GetString( "HCLIB.SQL" ) then
+
+		cookie.Set( "HCLIB.SQL", util.TableToJSON( { use = false, IP = "0.0.0.0", UserName = "", Password = "", Databasename = "", Port = "3306"  } ) );
+
+		return { use = false, IP = "0.0.0.0", UserName = "", Password = "", Databasename = "", Port = "3306"  };
+
 	end;
 
+	local sqlt = util.JSONToTable( cookie.GetString( "HCLIB.SQL" ) )
+
+	return sqlt;
 
 end;
 
---[[ < ---------- ( local config ) ---------- > ]]--
 
 local ccfg = {
-	mysql = HCLIB:CfgTable().Sql.UseMySQL or false,
-	host = HCLIB:CfgTable().Sql.HostIP or "",
-	username = HCLIB:CfgTable().Sql.Username or "",
-	password = HCLIB:CfgTable().Sql.Password or "",
-	schema = HCLIB:CfgTable().Sql.Databasename or "",
-	port = HCLIB:CfgTable().Sql.Port or 3306
+	
+	mysql = HCLIB.SQL.GetConnection().use or false,
+
+	host = HCLIB.SQL.GetConnection().IP or "",
+
+	username = HCLIB.SQL.GetConnection().UserName or "",
+
+	password = HCLIB.SQL.GetConnection().Password or "",
+
+	schema = HCLIB.SQL.GetConnection().Databasename or "",
+
+	port = HCLIB.SQL.GetConnection().Port or 3306
+
 };
 
- 
---[[ < ---------- ( Code ) ---------- > ]]--
 
 
 function HCLIB.SQL.Constructor( self, config )
@@ -190,7 +198,7 @@ function HCLIB.SQL:RequireModule()
 
 	if not ccfg.mysql then return end;
 
-	if not pcall(require, "mysqloo") then
+	if not pcall( require, "mysqloo" ) then
 
 		error("Couldn't find mysqlOO. Please install https://github.com/FredyH/mysqlOO. Reverting to SQLite");
 
@@ -201,57 +209,114 @@ function HCLIB.SQL:RequireModule()
 
 end;
 
-function HCLIB.SQL:SetConfig(config)
-	if not config or not type(config) == "table" then return end
-
-	self:RequireModule()
-
-	ccfg = config
-end
-
 function HCLIB.SQL:Connect()
+
 	if ccfg.mysql then
-		self.db = mysqloo.connect(ccfg.host, ccfg.username, ccfg.password, ccfg.schema, ccfg.port)
+
+		self.db = mysqloo.connect( ccfg.host, ccfg.username, ccfg.password, ccfg.schema, ccfg.port );
 
 		self.db.onConnectionFailed = function(_, msg)
+
 			timer.Simple(5, function()
-				if not self then return end
 
-				self:Connect(ccfg.host, ccfg.username, ccfg.password, ccfg.schema, ccfg.port)
-			end)
+				if not self then 
+					
+					return; 
+				
+				end;
 
-			error("Connection failed! " .. tostring(msg) ..	"\nTrying again in 5 seconds.")
-		end
+				self:Connect( ccfg.host, ccfg.username, ccfg.password, ccfg.schema, ccfg.port );
+
+			end );
+
+			error("Connection failed! " .. tostring( msg ) ..	"\nTrying again in 5 seconds.");
+
+		end;
 
 		mysqloo.onConnected = function()
-			for k, v in pairs(self.cache or {}) do
-				self:Query(v.query, v.callback, v.errorCallback)
-			end
 
-			self.cache = {}
+			for k, v in pairs( self.cache or {} ) do
 
-			mysqloo.onConnected()
-		end
+				self:Query( v.query, v.callback, v.errorCallback );
 
-		self.db:connect()
-	end
-end
+			end;
+
+			self.cache = {};
+
+			mysqloo.onConnected();
+
+		end;
+
+		self.db:connect();
+
+	end;
+
+end;
  
 function HCLIB.SQL:Disconnect()
-	if IsValid(self.db) then
-		self.db:disconnect()
-	end
-end
 
-function HCLIB.SQL:Query(query, callback, errorCallback)
-	local func = ccfg.mysql and querymysql or querySQLite
+	if IsValid( self.db ) then
 
-	func(self, query, callback, errorCallback) 
-end
+		self.db:disconnect();
+
+	end;
+
+end;
+
+function HCLIB.SQL:Query( query, callback, errorCallback )
+
+	local func = ccfg.mysql and querymysql or querySQLite;
+
+	func( self, query, callback, errorCallback );
+
+end;
+
+function HCLIB.SQL:QueryRow( query, row )
+
+	row = row or 1;
+
+	local r = HCLIB.SQL:Query( query, function( r )
+
+		if ( r ) then 
+			
+			return r[ row ];
+		
+		end;
+
+		return r;
+		
+	end, function( err )
+		
+		print( "Not Work!" )
+
+	end );
+
+	return r;
+
+end;
+
+function HCLIB.SQL:QueryValue( query )
+	
+	local r = HCLIB.SQL:QueryRow( query )
+
+	if ( r ) then
+
+		for k, v in pairs( r ) do 
+			
+			return v; 
+		
+		end;
+
+	end;
+
+	return r;
+
+end;
+
 
 function HCLIB.SQL:UsingMySQL()
 
-	return HCLIB:GetConfigTable().Sql.UseMySQL
+	return HCLIB:GetConfigTable().Sql.UseMySQL;
 
 end
 

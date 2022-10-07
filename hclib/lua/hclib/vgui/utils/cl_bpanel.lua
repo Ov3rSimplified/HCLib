@@ -1,4 +1,2 @@
----
---derma.DefineControl("HCLIB.Blank", nil, {}, "EditablePanel")
-
+derma.DefineControl("HCLIB.Blank", nil, {}, "EditablePanel")
 

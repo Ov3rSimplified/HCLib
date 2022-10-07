@@ -4,16 +4,10 @@
 			"path": "."
 		},
 		{
-			"path": "..\\testscript"
+			"path": "../swbf2_esc"
 		},
 		{
-			"path": "..\\svwlist"
-		},
-		{
-			"path": "../hclib_sam_integrate"
-		},
-		{
-			"path": "../sam-143"
+			"path": "../multiple_characters"
 		}
 	]
 }

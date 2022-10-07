@@ -53,7 +53,9 @@ function PANEL:Init()
 
     self.entry:SetTextColor( white );
 
-    self.entry:DrawTextEntryText(Color(255,255,255), Color(255, 30, 255),Color(255,255,255) );
+    self.entry:SetContentAlignment( 5 );
+
+   // self.entry:DrawTextEntryText(Color(255,255,255), Color(255, 30, 255),Color(255, 30, 255) );
 
     self.entry.Focused = false;
 
@@ -181,27 +183,9 @@ function PANEL:ShortInfo( bool )
 
 end;
 
-local speed = 4.5;
-
-local barStatus = 0; 
-
 function PANEL:Paint( w, h )
 
-    if self.entry.Focused then
-
-        barStatus = math.Clamp(barStatus + speed * FrameTime(), 0, 1);
-
-    else
-
-        barStatus = math.Clamp(barStatus - speed * FrameTime(), 0, 1);
-
-    end
-
-    draw.RoundedBox( 19, 0, 1, w, h - 2,  Purplemain );
-
-
-    draw.RoundedBox( 19, 0, 1, w * barStatus, h - 2,  Color(233,8,236) );
-
+    draw.RoundedBox( 19, 0, 1, w, h - 2, self.entry.Focused and Color(233,8,236)or  Purplemain );
 
     draw.RoundedBox( 15, 2, 4, w - 4, h - 8, BlueSecond );
 
