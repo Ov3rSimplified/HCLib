@@ -131,6 +131,8 @@ local function querymysql( self, query, callback, errorCallback )
 	end;
 
 	function q:onError(_, err)
+
+		print(_,err)
         
 		if not self.db or self.db:status() == mysqlOO.DATABASE_NOT_CONNECTED then
 
