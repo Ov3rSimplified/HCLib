@@ -8,6 +8,10 @@ return {
     ScriptExtraInformations = {},
     
     Scriptindex = "main", // NEVER CHANGE THIS SHHIT
+
+    Version = "4.2.0",
+
+    Downloadshort = "GIT",
      
     Config = {
         Language = {},

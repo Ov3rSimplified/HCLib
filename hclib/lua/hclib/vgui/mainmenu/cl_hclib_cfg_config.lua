@@ -367,7 +367,7 @@ function PANEL:Init()
 
                         HCLIB.ScriptBridge[k].CreateIngameConfig( lib, self.Scrollmenu );
 
-                        self.Title = k;
+                        self.Title = tostring( k .. " " .. HCLIB.ScriptBridge[k].Downloadshort.. "-" .. HCLIB.ScriptBridge[k].Version );
 
                         local bb = vgui.Create( "DButton", self );
 
