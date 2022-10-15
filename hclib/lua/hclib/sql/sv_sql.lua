@@ -48,11 +48,13 @@ THIS IS THE LIBRARY FOR ALL OF HEXAGON CRYPTICS SCRIPTS!!
 
 HCLIB.SQL = {};
 
+print( "dd")
+
 require( "mysqloo" );           
 
 concommand.Add("SQL.DeleteTable", function(ply,_,args)
 
-	HCLIB.SQL:Query("DROP TABLE IF EXISTS `".. args[1] .."`")
+	sql.Query("DROP TABLE IF EXISTS `".. args[1] .."`", nil, nil)
 
 end)
 
@@ -125,14 +127,13 @@ local function querymysql( self, query, callback, errorCallback )
 		if callback then
  
 			callback( data );
+		print( data[3]["Language"] )
 
 		end;
 
 	end;
 
 	function q:onError(_, err)
-
-		print(_,err)
         
 		if not self.db or self.db:status() == mysqlOO.DATABASE_NOT_CONNECTED then
 
@@ -284,7 +285,7 @@ function HCLIB.SQL:QueryRow( query, row )
 			return r[ row ];
 		
 		end;
-
+ 
 		return r;
 		
 	end, function( err )
@@ -343,9 +344,7 @@ end
 HCLIB.SQL:Connect()
 
 
-
-
-
+ 
 
 
 

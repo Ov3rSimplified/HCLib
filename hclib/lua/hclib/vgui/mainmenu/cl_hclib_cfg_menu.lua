@@ -292,7 +292,7 @@ function PANEL:SideBar()
                 PosX = 33,
                 PosY = 15,
             },
-        },]]
+        },
         {
             Name = "Danger Zone",
             pnl = {},
@@ -304,6 +304,7 @@ function PANEL:SideBar()
                 PosY = 15,
             },
         },
+        ]]
         --[[{
             Name = "Credits",
             pnl = {},
@@ -399,7 +400,6 @@ function PANEL.SBFS:Normal(parent)
 
             end;
 
-     --       draw.SimpleText( string.Left(v.Name, 1), "HCLib.VGUI.MENU.Minimize", w/2, h/2, white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER );
         end;
 
         function v.pnl:DoClickInternal()

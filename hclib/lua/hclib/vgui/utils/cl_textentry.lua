@@ -150,6 +150,14 @@ function PANEL:ShortInfo( bool )
         
         self.f:SetTitle( self.Title or "NOT GIVEN!" );
 
+        self.f.lblTitle:SetFont( "HCLib.VGUI.25" );
+        
+        self.f.PerformLayout = function( me )
+            
+	        me.lblTitle:SetSize( 400, 40 );
+
+        end;
+
         self.f:AlphaTo( 255, 0.25, 0 ); 
 
         self.f:MakePopup();
@@ -177,7 +185,17 @@ function PANEL:ShortInfo( bool )
 
         self.d:Dock( FILL );
 
+        self.d:DockMargin( 0, 6, 0, 0 );
+
+        self.d:InsertColorChange( 255, 255, 225, 255 );
+
         self.d:AppendText( self.Description or "NOT GIVEN!" )
+
+        self.d.PerformLayout = function( self )
+            
+            self:SetFontInternal( "HCLib.VGUI.30" );
+
+        end;
 
     end;
 

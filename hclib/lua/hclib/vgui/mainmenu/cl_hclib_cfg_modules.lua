@@ -118,9 +118,9 @@ function PANEL:Init()
                 
                 draw.RoundedBox( 10, 0, 0, w, h, HCLIB.ScriptManaged[k] and Color(198,29,29) or Color(0,250,42) );
 
-                draw.SimpleText( HCLIB.ScriptManaged[k] and "Disable" or "Enable" , "HCLib.VGUI.MODULES.edButton", w / 2, h / 2 - 2, white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER );
+                draw.SimpleText( HCLIB.ScriptManaged[k] and HCLIB:L( "main", "Modules.Disable" ) or HCLIB:L( "main", "Modules.Activate" ) , "HCLib.VGUI.MODULES.edButton", w / 2, h / 2 - 2, white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER );
 
-            end;
+            end; 
 
             BoolButton.DoClick = function(  me ) 
 

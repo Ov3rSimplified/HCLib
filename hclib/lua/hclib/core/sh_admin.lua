@@ -53,6 +53,7 @@ function HCLIB.Admin:HasPermission( ply, class, permission )
             HCLIB:WriteCompressedTable( HCLIB.Admin.Permissions );
 
         net.SendToServer();
+        
     end;
 
     if table.IsEmpty( HCLIB.Admin.Permissions ) then return end;

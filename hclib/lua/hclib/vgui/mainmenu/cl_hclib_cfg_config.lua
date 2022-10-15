@@ -177,7 +177,89 @@ local lib = {
 
         return panel;
 
-    end
+    end,
+
+    AddPopUp = function( title, savefunction, sizeX, sizeY )
+        
+        local Frame =  vgui.Create( "HCLIB.Blank" );
+
+        Frame:SetWide( sizeX );
+
+        Frame:SetTall( sizeY );
+
+        //Frame:AlphaTo( 0,0.25, 0 );
+
+        // Frame:AlphaTo( 255, 0.45, 0 ); 
+
+        Frame:Center();
+
+        Frame:MakePopup();
+
+        Frame:DoModal();
+        
+        Frame.Paint = function( self, w, h )
+            
+            draw.RoundedBox( 19, 0, 1, w, h - 2,  Purplemain );
+
+            draw.RoundedBox( 15, 2, 2, w - 4, h - 8, BlueSecond );
+
+        end;
+
+
+        Frame.Top = vgui.Create( "DPanel", Frame );
+
+        Frame.Top:Dock( TOP );
+
+        Frame.Top:DockMargin( 0, 0, 0, 0 );
+
+        Frame.Top:SetTall( 60 );
+
+        Frame.Top.Paint = function( self, w, h )
+
+            draw.RoundedBoxEx( 19, 0, 0, w, h,  Purplemain, true, true, false, false );
+
+            draw.SimpleText( title, "HCLib.VGUI.39", 10, h / 2, white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER );
+
+        end;
+
+        Frame.Close = vgui.Create( "DButton", Frame.Top );
+
+        Frame.Close:SetFont( "HCLib.VGUI.50" );
+
+        Frame.Close:SetText( "X" );
+
+        Frame.Close:SetTextColor( white );
+
+        Frame.Close:Dock( RIGHT );
+
+        Frame.Close:DockMargin( 0, 0, 0, 0 );
+
+        Frame.Close:SetWide( 40 );
+
+        Frame.Close.Paint = function( self, w, h )
+            
+            if ( self:IsHovered() ) then 
+
+                self:SetTextColor( Color( 250, 0 ,0 ) );
+
+            else
+
+                self:SetTextColor( white );
+
+            end;
+
+        end;
+
+        Frame.Close.DoClick = function( self )
+            
+            Frame:Remove();
+            
+        end;
+
+
+        return Frame;
+
+    end;
 };
 
 function PANEL:Init()
@@ -228,469 +310,102 @@ function PANEL:Init()
 
     function sbar.btnDown:Paint( w, h ) return end;
 
+    
+    local function  scripts( )
+        
+        for k,v in pairs( HCLIB.ScriptManaged ) do 
 
-        local function scripts()
+                if not HCLIB.FoundedScripts[k] then continue end;
 
-            self.lang = vgui.Create("DButton", self.Scrollmenu );
+                if not HCLIB.ScriptManaged[k] then continue end;
 
-            self.lang:Dock( TOP );
+                self.btn = vgui.Create("DButton", self.Scrollmenu );
 
-            self.lang:SetTall( 100 );
+                self.btn:Dock( TOP );
 
-            self.lang:Dock( TOP );
+                self.btn:SetTall( 100 );
 
-            self.lang:DockMargin( 12,5,12,0 );
+                self.btn:Dock( TOP );
 
-            self.lang:SetTall( 69 );
+                self.btn:DockMargin( 40,20,40,0 );
 
-            self.lang:SetText( "" );
+                self.btn:SetTall( 69 );
 
-            self.lang:SetAlpha( 0 ); 
+                self.btn:SetText( "" );
 
-            self.lang:AlphaTo( 255, 0.25, 0 ); 
+                self.btn:SetAlpha( 0 ); 
 
-            self.lang.Paint = function( me, w, h )
-                
-                me.col = BlueMain;
+                self.btn:AlphaTo( 255, 0.25, 0 ); 
 
-                if ( me:IsHovered() ) then 
+                self.btn.Paint = function( me, w, h )
+                    
+                    me.col = BlueMain;
 
-                    me.col = Purplemain;
+                    if ( me:IsHovered() ) then 
+                        me.col = Purplemain;
+
+                    end;
+
+                    draw.RoundedBox( 19, 0, 1, w, h - 2, Purplemain );
+
+                    draw.RoundedBox( 15, 0, 0, w, h - 8, me.col );
+
+                    draw.SimpleText(  tostring( string.upper( HCLIB.ScriptBridge[k].ScriptName ) ), "HCLib.VGUI.HOME.Title", w / 2, h / 2 - 10, white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER );
 
                 end;
 
-                draw.RoundedBox( 19, 0, 1, w, h - 2, Purplemain );
+                self.btn.DoClick = function( me )
+                    
+                    local poX, posY = me:GetPos();
 
-                draw.RoundedBox( 15, 0, 0, w, h - 8, me.col );
+                    me:MoveTo( -1200, posY, 0.4, 0.01, -1, function( me2 )
 
-                draw.SimpleText(  HCLIB:L("main", "cfg.Language"), "HCLib.VGUI.HOME.Title", w / 2, h / 2 - 10, white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER );
-
-            end;
-
-            self.lang.DoClick = function( me )
-                
-                local poX, posY = me:GetPos();
-
-                me:MoveTo( -1200, posY, 0.4, 0.01, -1, function( me2 )
-
-
-                    self.Scrollmenu:Clear();
-
-                    self.Topbar:DockMargin( 120, 9, 120, 50 ); 
-
-                    self.Title = "Language";
-
-                    local current = 1;
-
-                    local lpacks = {};
-
-                    for name, _ in pairs( HCLIB.Config.Language ) do 
-
-                        table.insert( lpacks, name )
-
-                    end;
-
-                    local ser = vgui.Create( "HCLIB.TextEntry", self )
-                        
-                    ser:SetSize( 100, 30 );
-
-                    ser:SetPos( 5, 870 );
-
-                    ser.entry:SetFont( "HCLib.VGUI.20" );
-
-                    ser.entry:SetPlaceholderText( HCLIB:L( "main", "search" ) );
-
-
-                    local function drawp()
 
                         self.Scrollmenu:Clear();
 
-                        self.Title = HCLIB:L( "main", "Language" ) .. " - " .. lpacks[ current ]
+                        self.Topbar:DockMargin( 120, 9, 120, 50 ); 
 
-                        local items = {};
+                        HCLIB.ScriptBridge[k].CreateIngameConfig( lib, self.Scrollmenu );
 
-                        ----------------------[ main vgui ]
+                        self.Title = k;
 
+                        local bb = vgui.Create( "DButton", self );
 
-                        if table.IsEmpty( HCLIB.Config.Language[ lpacks[ current ] ][ HCLIB.Config.Cfg[ "main" ].Language ] ) then
-                            
-                            local panel = vgui.Create( "DPanel", self.Scrollmenu ); 
+                        bb:SetSize( 100, 30 );
 
-                            panel:Dock( TOP ); 
-                    
-                            panel:DockMargin( 10, 9, 10, 0 ); 
-                    
-                            panel:SetTall( 90 );
-                                
-                            local speed = 5;
-                    
-                            local barStatus = 0;  
+                        bb:SetPos( 906, 874);
 
-                            panel.Paint = function( me, w, h )
-                    
-                                if barStatus then
+                        bb:SetText( "← " .. HCLIB:L( "main", "s.back" ) );
                         
-                                    barStatus = math.Clamp(barStatus + speed * FrameTime(), 0, 1)
-                                    
-                                else
+                        bb:SetTextColor( white )
                         
-                                    barStatus = math.Clamp(barStatus - speed * FrameTime(), 0, 1)
-                        
-                                end
-                        
-                                    draw.RoundedBox( 19, 0, 1, w * barStatus, h - 2,  Purplemain );
-                        
-                                    draw.RoundedBox( 15, 2, 2, w - 4, h - 8, BlueSecond );
+                        bb.Paint  = function( me, w, h )
 
-                                    
-
-                                    draw.SimpleText( HCLIB:L( "main", "NoDataFound" ), "HCLib.VGUI.50", w / 2, h / 2, white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-                                
-                            end;
-
-                            return;
+                            draw.RoundedBoxEx( 19, 0, 0, w, h, Purplemain, true, false, false, true );
 
                         end;
 
-                        for k, v in pairs( HCLIB.Config.Language[ lpacks[ current ] ][ HCLIB.Config.Cfg[ "main" ].Language ] ) do 
-
-                            local panel = vgui.Create( "DPanel", self.Scrollmenu ); 
-
-                            panel:Dock( TOP ); 
-                    
-                            panel:DockMargin( 10, 9, 10, 0 ); 
-                    
-                            panel:SetTall( 90 );
-
-                            panel.txt = k;
-                            
-                            table.insert( items, panel );
-                                
-                            local speed = 5;
-                    
-                            local barStatus = 0;  
-
-                            local ktxt = string.len( k );
-
-                            local font = "HCLib.VGUI.50";
-
-                            panel.Paint = function( me, w, h )
-                    
-                                if barStatus then
-                        
-                                    barStatus = math.Clamp(barStatus + speed * FrameTime(), 0, 1)
-                                    
-                                else
-                        
-                                    barStatus = math.Clamp(barStatus - speed * FrameTime(), 0, 1)
-                        
-                                end
-                        
-                                    draw.RoundedBox( 19, 0, 1, w * barStatus, h - 2,  Purplemain );
-                        
-                                    draw.RoundedBox( 15, 2, 2, w - 4, h - 8, BlueSecond );
-
-                                    if ( ktxt >= 30 ) then 
-
-                                        font = "HCLib.VGUI.30"
-
-                                    end;
-                                    
-
-                                    draw.SimpleText( tostring( k ), font, 10, h / 2 - 5, white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-                                
-                            end;
-
-                            
-                            local entry = vgui.Create( "HCLIB.TextEntry", panel )
-
-                            entry:Dock( RIGHT );
-
-                            entry:DockMargin( 0, 10, 10, 10 );
-
-                            entry:SetWide( 400 );
-                            
-                            entry.entry:SetText( tostring( v ) )
-
-                            entry:ShortInfo( false );
-
-                            entry.entry.OnEnter = function( self )
-
-                                HCLIB.Config.Language[ lpacks[ current ] ][ HCLIB.Config.Cfg[ "main" ].Language ][ k ] = entry.entry:GetValue();
-
-                                net.Start( "HCLIB.SetConfig" )
-                                    
-                                    HCLIB:WriteCompressedTable( HCLIB.Config );
-                
-                                    net.WriteString( lpacks[ current ] );
-                
-                                    net.WriteString( "Language" );
-                
-                                net.SendToServer();
-
-                                
-                            end;
-
-
-
-
-                            
-                        end;
-
-                        function ser.entry:OnChange()
-                            
-                            local search_text =  ser.entry:GetText():lower();
-                            
-                            if (#search_text == 0) then
-
-                                for _,v in pairs(items) do
-
-                                    v:SetTall(90);      
-
-                                end;
-
-                            else
-
-                                for _,v in pairs(items) do
-
-                                    if ( v.txt:lower():find( search_text, 1, true ) ) then
-
-                                        v:SetTall(90);
-
-                                    else
-
-                                        v:SetTall(0);
-
-                                    end;
-
-                                end;
-
-                            end;
-
-                        end;
-
-                    end;
-
-                    drawp()
-
-                    local bottom = vgui.Create( "DPanel", self );
-
-                    bottom:SetSize( 500, 50 );
-
-                    bottom:SetPos( 240, 855);
-
-                    bottom.Paint = function( me, w, h)
-                        
-                        draw.RoundedBoxEx( 19, 0, 0, w, h, Purplemain, true, true, false, false );
-
-                        draw.SimpleText(  current .. "/" .. table.Count( lpacks ), "HCLib.VGUI.40", w / 2, h / 2, white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER );
-
-                    end;
-
-                    bottom.Left = vgui.Create( "DButton", bottom );
-                    
-                    bottom.Left:Dock( LEFT );
-
-                    bottom.Left:DockMargin( 8, 5, 5, 5 );
-
-                    bottom.Left:SetWide( 100 )
-
-                    bottom.Left:SetText( "<--" )
-
-                    bottom.Left:SetTextColor( white )
-
-                    bottom.Left.Paint = function( me, w, h )
-
-                        draw.RoundedBoxEx( 19, 0, 0, w, h, BlueMain, true, false, true, false );
-                        
-                    end;
-                    
-                    bottom.Left.DoClick = function()
-
-                        if current == 1 then 
-
-                            current = table.Count( lpacks );
-
-                            drawp();
-                        
-                        else
-
-                            current = current - 1;
-
-                            drawp();
-
-                        end;
-
-                    end;
-
-                    bottom.Right = vgui.Create( "DButton", bottom );
-                    
-                    bottom.Right:Dock( RIGHT );
-
-                    bottom.Right:DockMargin( 8, 5, 5, 5 );
-
-                    bottom.Right:SetWide( 100 )
-
-                    bottom.Right:SetText( "-->" )
-
-                    bottom.Right:SetTextColor( white )
-
-                    bottom.Right.Paint = function( me, w, h )
-
-                        draw.RoundedBoxEx( 19, 0, 0, w, h, BlueMain, false, true, false, true );
-                        
-                    end;
-
-                    bottom.Right.DoClick = function()
-
-                        if current >= table.Count( lpacks ) then 
-
-                            current = 1; 
-
-                            drawp();
-
-                        else
-
-                            current = current + 1;
-
-                            drawp();
-
-                        end;
-                        
-                    end;
-
-                    local bb = vgui.Create( "DButton", self );
-
-                    bb:SetSize( 100, 30 );
-
-                    bb:SetPos( 906, 874);
-
-                    bb:SetText( "← " .. HCLIB:L( "main", "s.back" ) );
-                    
-                    bb:SetTextColor( white )
-                    
-                    bb.Paint  = function( me, w, h )
-
-                        draw.RoundedBoxEx( 19, 0, 0, w, h, Purplemain, true, false, false, true );
-
-                    end;
-
-                    bb.DoClick = function( me )
-
-                        self.Scrollmenu:Clear();
-
-                        bottom:Remove();
-
-                        me:Remove();
-
-                        ser:Remove();
-
-                        self.Title = HCLIB:L("main", "Configuration");
-
-                        scripts();
-
-                    end;
-
-                    me:Remove();    
-
-                end );
-                
-
-            end;
-
-            for k,v in pairs( HCLIB.ScriptManaged ) do 
-
-                    if not HCLIB.FoundedScripts[k] then continue end;
-
-                    if not HCLIB.ScriptManaged[k] then continue end;
-
-                    self.btn = vgui.Create("DButton", self.Scrollmenu );
-
-                    self.btn:Dock( TOP );
-
-                    self.btn:SetTall( 100 );
-
-                    self.btn:Dock( TOP );
-
-                    self.btn:DockMargin( 12,5,12,0 );
-
-                    self.btn:SetTall( 69 );
-
-                    self.btn:SetText( "" );
-
-                    self.btn:SetAlpha( 0 ); 
-
-                    self.btn:AlphaTo( 255, 0.25, 0 ); 
-
-                    self.btn.Paint = function( me, w, h )
-                        
-                        me.col = BlueMain;
-
-                        if ( me:IsHovered() ) then 
-                            me.col = Purplemain;
-
-                        end;
-
-                        draw.RoundedBox( 19, 0, 1, w, h - 2, Purplemain );
-
-                        draw.RoundedBox( 15, 0, 0, w, h - 8, me.col );
-
-                        draw.SimpleText(  tostring( HCLIB.ScriptBridge[k].ScriptName ), "HCLib.VGUI.HOME.Title", w / 2, h / 2 - 10, white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER );
-
-                    end;
-
-                    self.btn.DoClick = function( me )
-                        
-                        local poX, posY = me:GetPos();
-
-                        me:MoveTo( -1200, posY, 0.4, 0.01, -1, function( me2 )
-
+                        bb.DoClick = function( me )
 
                             self.Scrollmenu:Clear();
 
-                            self.Topbar:DockMargin( 120, 9, 120, 50 ); 
+                            me:Remove();
 
-                            HCLIB.ScriptBridge[k].CreateIngameConfig( lib, self.Scrollmenu );
+                            self.Title = HCLIB:L("main", "Configuration");
 
-                            self.Title = k;
+                            scripts();
 
-                            local bb = vgui.Create( "DButton", self );
+                        end;
 
-                            bb:SetSize( 100, 30 );
+                        me:Remove();    
 
-                            bb:SetPos( 906, 874);
-
-                            bb:SetText( "← " .. HCLIB:L( "main", "s.back" ) );
-                            
-                            bb:SetTextColor( white )
-                            
-                            bb.Paint  = function( me, w, h )
-
-                                draw.RoundedBoxEx( 19, 0, 0, w, h, Purplemain, true, false, false, true );
-
-                            end;
-
-                            bb.DoClick = function( me )
-
-                                self.Scrollmenu:Clear();
-
-                                me:Remove();
-
-                                self.Title = HCLIB:L("main", "Configuration");
-
-                                scripts();
-
-                            end;
-
-                            me:Remove();    
-
-                        end );
-
-                    end;
+                    end );
 
                 end;
 
             end;
+
+        end;
 
         scripts();
 

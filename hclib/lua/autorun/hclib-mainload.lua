@@ -30,30 +30,40 @@ THIS IS THE LIBRARY FOR ALL OF HEXAGON CRYPTICS SCRIPTS!!
 
 --[[                     < -- GLOBAL VARS -- >                     ]]--
 
-HCLIB = HCLIB or {}
+HCLIB = HCLIB or {};
 
-HCLIB.Scripts = HCLIB.Scripts  or {}
+HCLIB.SQL = HCLIB.SQL or {};
 
-HCLIB.FoundedScripts = HCLIB.FoundedScripts  or {}
+HCLIB.Scripts = HCLIB.Scripts  or {};
+
+HCLIB.FoundedScripts = HCLIB.FoundedScripts  or {};
  
-HCLIB.ScriptManaged = HCLIB.ScriptManaged or {}
+HCLIB.ScriptManaged = HCLIB.ScriptManaged or {};
 
-HCLIB.ScriptBridge = HCLIB.ScriptBridge or {}
+HCLIB.ScriptBridge = HCLIB.ScriptBridge or {};
 
-HCLIB.Config = HCLIB.Config or {}
+HCLIB.Config = HCLIB.Config or {};
+
+HCLIB.Config.Language = HCLIB.Config.Language or {};
+
+HCLIB.Config.Cfg = HCLIB.Config.Cfg or {};
+
+HCLIB.Config.AccessGroups = HCLIB.Config.AccessGroups or {};
+
 
 HCLIB.SupportetLanguages = {
     ["GER"] = true,
     ["ENG"] = true,
     ["ESP"] = true,
     ["JAP"] = true,
+    ["FRA"] = true,
 }
 
 HCLIB.Debugmode = true; 
 
 
 
-if ( SERVER ) then 
+if ( SERVER ) then      
 
     if not cookie.GetString( "HCLIB.SQL" ) then
 
@@ -80,7 +90,7 @@ function HCLIB:ConsoleMessage(mode, text)
         MsgC( Color( 222, 23, 208), "[HCLIB]", Color(216,197,21), " - [INFO] ", Color(255,255,255), text, "\n" );
 
     end;
-    
+     
     if mode == "success" then 
 
         MsgC( Color( 222, 23, 208), "[HCLIB]", Color(64,244,14), " - [SUCCESS] ", Color(255,255,255), text, "\n" );
@@ -92,7 +102,7 @@ end;
 
 --[[                     < -- LOADFUNCTIONS -- >                     ]]--
 
-local LoadFiles = function(dir)  
+local function LoadFiles(dir)  
 
 	local files = file.Find(dir.. "/".. "*", "LUA");
 
@@ -119,7 +129,7 @@ local LoadFiles = function(dir)
 			end;
 
 			AddCSLuaFile(dir.. "/".. v);
-
+ 
 		end;
 	
 		if string.StartWith(v, "sv") then
@@ -139,21 +149,23 @@ local LoadFiles = function(dir)
 
 end; 
 
-local LoadScripts = function()
+local function LoadScripts()
 
     HCLIB:ConsoleMessage( "info", " Start Loading Scripts..." )
 
-    local files, folder = file.Find( "hclib/scripts/*", "LUA" );
+    local files, folder = file.Find( "hclib/scripts/*", "LUA" )
 
     for k, v in pairs( folder ) do 
-
-        local succ, err = pcall( include, "hclib/scripts/" .. v .. "/sh_load.lua" )
-
-        if file.Exists( "hclib/scripts/" .. v .. "/sh_load.lua", "LUA" ) then 
+    
+        local succ, err = pcall( include, "hclib/scripts/" .. v .. "/setup/sh_load.lua" )
         
-            AddCSLuaFile( "hclib/scripts/" .. v .. "/sh_load.lua" );
+        local LoadFilesile, LoadFilesolder = file.Find( "hclib/scripts/" .. v .. "/setup/languages/*", "LUA" );
 
-            include( "hclib/scripts/" .. v .. "/sh_load.lua" ); 
+        if file.Exists( "hclib/scripts/" .. v .. "/setup/sh_load.lua", "LUA" ) then 
+        
+            AddCSLuaFile( "hclib/scripts/" .. v .. "/setup/sh_load.lua" );
+
+            include( "hclib/scripts/" .. v .. "/setup/sh_load.lua" ); 
        
             HCLIB.FoundedScripts[err.Scriptindex] = true;
  
@@ -204,83 +216,98 @@ local LoadScripts = function()
                 end;
 
             end;
+             
+            HCLIB.Config.Language[ err.Scriptindex ] = {};
 
-            HCLIB.Scripts[err.Scriptindex] = {};
+
+            for lang, data in pairs( file.Find( "hclib/scripts/" .. v .. "/setup/languages/*", "LUA" ) ) do 
+
+                local code = string.upper( string.Left( data, 3 ) );
+ 
+                if not HCLIB.SupportetLanguages[ code ] then continue end;
+
+                local s, e = pcall( include, "hclib/scripts/" .. v .. "/setup/languages/" .. data  )
+                
+               HCLIB.Config.Language[ err.Scriptindex ][ code ] = e;
+                
+            end; 
+
+
+            HCLIB.Scripts[ err.Scriptindex ] = {};
             
             err.LoadFiles()
+
+
             HCLIB:ConsoleMessage( "success", "Script: " .. err.Scriptindex .. " loaded" )
 
-
-            HCLIB.ScriptBridge[err.Scriptindex] = err;
+            HCLIB.ScriptBridge[ err.Scriptindex ] = err;
  
-        end;
+        end; 
 
     end;
 
 end;
 
 
-
-local lf = LoadFiles;
-
 --[[                     < -- LOAD SECTOR -- >                     ]]--
 
 HCLIB:ConsoleMessage( "info", " Start Loading")
 
-lf( "hclib/functions" );
+LoadFiles( "hclib/sql" );
 
-lf( "hclib/gui" );
+LoadFiles( "hclib/functions" );
 
-lf( "hclib/sql" );
+LoadFiles( "hclib/gui" );
 
-lf( "hclib/vgui" );
+LoadFiles( "hclib/vgui" );
 
-lf( "hclib/vgui/mainmenu" ); 
+LoadFiles( "hclib/vgui/mainmenu" ); 
 
-lf( "hclib/vgui/utils" );
+LoadFiles( "hclib/vgui/utils" );
 
-lf( "hclib/core" );
+LoadFiles( "hclib/core" );
 
 LoadScripts();
 
 if GAMEMODE then 
 
-    lf( "hclib/functions" );
+    LoadFiles( "hclib/sql" );
 
-    lf( "hclib/gui" );
-    
-    lf( "hclib/sql" );
-    
-    lf( "hclib/vgui" );
+    LoadFiles( "hclib/functions" );
 
-    lf( "hclib/vgui/mainmenu" ); 
+    LoadFiles( "hclib/gui" );
+         
+    LoadFiles( "hclib/vgui" );
 
-    lf( "hclib/vgui/utils" );
+    LoadFiles( "hclib/vgui/mainmenu" ); 
+
+    LoadFiles( "hclib/vgui/utils" );
         
-    lf( "hclib/core" );
+    LoadFiles( "hclib/core" );
 
     LoadScripts();
 
 end;
  
 local Initialize = function()
-
-    lf( "hclib/functions" );
-
-    lf( "hclib/gui" );
-
-    lf( "hclib/sql" );
-
-    lf( "hclib/vgui" );
-
-    lf( "hclib/vgui/mainmenu" );
     
-    lf( "hclib/vgui/utils" );
+    LoadFiles( "hclib/sql" );
 
-    lf( "hclib/core" ); 
+    LoadFiles( "hclib/functions" );
+
+    LoadFiles( "hclib/gui" ); 
+ 
+    LoadFiles( "hclib/vgui" );
+
+    LoadFiles( "hclib/vgui/mainmenu" );
+    
+    LoadFiles( "hclib/vgui/utils" );
+ 
+    LoadFiles( "hclib/core" ); 
  
     LoadScripts();
 
 end; hook.Add( "Initialize", "_HCLib.Initialize", Initialize );
 
 HCLIB.isInit = false; // IMPORTANT FOR FUNCTION, WICH RUN ONLY ONE TIME  
+

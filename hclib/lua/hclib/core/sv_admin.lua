@@ -33,6 +33,8 @@ util.AddNetworkString( "HCLIB.CheckGoodClient" );
 
 util.AddNetworkString( "HCLIB.SendPermission" );
 
+util.AddNetworkString( "HCLIB.RequestSynch" );
+
 --[[ < ---------- ( NET FUNCTIONS ) ---------- > ]]--
 
 local function SynchPermissions( len, ply )
@@ -105,6 +107,7 @@ local function SendPermission( len, ply )
 
 end;
 
+
 --[[ < ---------- ( CREATE NETS ) ---------- > ]]--
 
 net.Receive( "HCLIB.SynchPermissions", SynchPermissions);
@@ -112,6 +115,8 @@ net.Receive( "HCLIB.SynchPermissions", SynchPermissions);
 net.Receive( "HCLIB.CheckGoodClient", CheckGoodClient);
 
 net.Receive( "HCLIB.SendPermission", SendPermission);
+
+net.Receive( "HCLIB.RequestSynch", function( len, ply ) SynchPermissions( len, ply ) net.Start( "HCLIB.RequestSynch" ) net.Send( ply ) end );
 
 --[[ < ---------- ( FUNCTIONS ) ---------- > ]] --
 
