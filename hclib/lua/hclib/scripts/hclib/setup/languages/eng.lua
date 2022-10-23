@@ -29,11 +29,11 @@ return {
 
     ["maincfg.MySQL"] = "MySQl Settings",
 
-    ["maincfg.MySQL.Use"] = "Activate MySQL",
+    ["maincfg.MySQL.Use"] = "Enable MySQL",
 
-    ["maincfg.MySQL.IP"] = "IP-Adress",
+    ["maincfg.MySQL.IP"] = "MySQL IP-Address",
 
-    ["maincfg.MySQL.DBName"] = "Databasename",
+    ["maincfg.MySQL.DBName"] = "Database Name",
 
     ["maincfg.MySQL.Username"] = "Username",
 
@@ -41,7 +41,7 @@ return {
 
     ["maincfg.MySQL.Port"] = "Port",
 
-    ["maincfg.Ranks"] = "Rank Settings",
+    ["maincfg.Ranks"] = "Usergroup Permissions",
 
     ["maincfg.Ranks.Usergroups"] = "Usergroups",
 
@@ -49,11 +49,11 @@ return {
 
     ["maincfg.Ranks.AddUsergroups"] = "Add Usergroups",
 
-    ["maincfg.Ranks.EnterUsergroupname"] = "Enter Usergroupname",
+    ["maincfg.Ranks.EnterUsergroupname"] = "Enter Usergroup Name",
 
     ["maincfg.Ranks.Usergroupname.InfoTitle"] = "Name of the Usergroup",
 
-    ["maincfg.Ranks.Usergroupname.Info"] = "please make sure that you write the user group name correctly!",
+    ["maincfg.Ranks.Usergroupname.Info"] = "please make sure that the usergroup is spelled correctly, it is case sensitive!",
 
     ["maincfg.Ranks.selectside.Info"] = "LEFT Select; RIGHT Menu for Delete Permissiongroup!",
 
@@ -61,9 +61,8 @@ return {
 
     ["maincfg.Delete"] = "Delete",
 
-    ["Modules.Activate"] = "Activate",
+    ["Modules.Activate"] = "Enable",
     
-    ["Modules.Disable"] = "Deactivate",
-
+    ["Modules.Disable"] = "Disable",
 
 }

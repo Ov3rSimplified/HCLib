@@ -136,7 +136,6 @@ function HCLIB:CIACISQL()  // Check if all Configs in SQL
 
 end;
 
-
 function HCLIB:NSQLCT( class, section, newtable ) // New SQL Config Table
 
     sql.Query( "UPDATE HCLIB_Config SET " .. SQLStr( section ) .. " = " .. SQLStr( util.TableToJSON( newtable ) ) .. " WHERE Class = " .. SQLStr( class ), nil, nil )
@@ -183,7 +182,7 @@ function HCLIB:UpdateConfigTable( Class, Section  )
         return 
     
     end;
-    if not ( Section "Config" or "AccessGroups" or "*" ) then 
+    if not ( Section == "Config" or "AccessGroups" or "*" ) then 
         
         HCLIB:ConsoleMessage("error", " Invalid Section!")
         

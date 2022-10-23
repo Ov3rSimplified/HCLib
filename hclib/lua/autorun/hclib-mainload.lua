@@ -41,7 +41,7 @@ HCLIB.FoundedScripts = HCLIB.FoundedScripts  or {};
 HCLIB.ScriptManaged = HCLIB.ScriptManaged or {};
 
 HCLIB.ScriptBridge = HCLIB.ScriptBridge or {};
-
+ 
 HCLIB.Config = HCLIB.Config or {};
 
 HCLIB.Config.Language = HCLIB.Config.Language or {};
@@ -72,10 +72,6 @@ if ( SERVER ) then
     end;
     
 end;
-
-
-
-
 
 function HCLIB:ConsoleMessage(mode, text)
 
