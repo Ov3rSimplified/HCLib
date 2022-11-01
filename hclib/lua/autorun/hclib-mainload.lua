@@ -59,7 +59,7 @@ HCLIB.SupportetLanguages = {
     ["FRA"] = true,
 }
 
-HCLIB.Debugmode = true; 
+HCLIB.Debugmode = false; 
 
 
 
@@ -146,7 +146,7 @@ local function LoadFiles(dir)
 end; 
 
 local function LoadScripts()
-
+ 
     HCLIB:ConsoleMessage( "info", " Start Loading Scripts..." )
 
     local files, folder = file.Find( "hclib/scripts/*", "LUA" )
